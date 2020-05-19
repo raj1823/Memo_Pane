@@ -53,6 +53,8 @@ export function authenticate_User(username,password) {
                 reject("ERROR")
             }
 
+        }).catch(error=>{
+            reject("API_ERROR")
         })
       } catch (error) {
           reject("API_ERROR")
@@ -60,3 +62,71 @@ export function authenticate_User(username,password) {
     });
   };
 }
+
+
+
+export function register_User(username,password,name,phoneNumber) {
+  let registerUserAPI = API.apiConfig.createApi.createUser;
+  console.log('login Api:', registerUserAPI);
+  return dispatch => {
+
+    return new Promise(function(resolve, reject) {
+
+        
+      try {
+        console.log("------------------",username,password)
+        
+
+        fetch(registerUserAPI,{
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'content-type': 'application/json',
+              },
+            body : JSON.stringify({
+                username : username,
+                password : password,
+                name: name,
+                phoneNumber: phoneNumber
+
+            })
+        }).then(res=>{
+
+            console.log("status",res.status)
+
+            
+            if(res.status>=200 && res.status<=300)
+            {
+                return res.json()
+                
+
+            }
+         
+            else 
+            reject("API_ERROR")
+        }).then(response=>{
+
+            console.log("response in:",response)
+
+            if(response.status==true)
+            {    
+                resolve(200)
+               
+
+            }
+            else{
+                reject("ERROR")
+            }
+
+        }).catch(error=>{
+            reject("API_ERROR")
+        })
+      } catch (error) {
+          reject("API_ERROR")
+      }
+    });
+  };
+}
+
+
+

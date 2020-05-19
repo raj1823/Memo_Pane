@@ -6,19 +6,21 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
- 
 } from 'react-native';
+
 import {connect} from 'react-redux';
 import {TextInput} from 'react-native';
-import {authenticate_User} from '../services/Authentication/action'
+import ActivityWaiter from '../components/activityWaiter';
+import {authenticate_User} from '../services/Authentication/action';
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hidePassword:true,
-      username:"Test22",
-      password:"test1@_",
+      hidePassword: true,
+      username: 'Test22',
+      password: 'test1@_',
+      isLoading: false,
       imagePath: require('../../assets/addUser.png'),
       viewPasswordImage: require('../../assets/viewPassword.png'),
       image2path: require('../../assets/pokeball.png'),
@@ -26,164 +28,167 @@ class Login extends React.Component {
       googlePlusIcon: require('../../assets/googlePlus.png'),
       twitterIcon: require('../../assets/twitter.png'),
       githubIcon: require('../../assets/github.png'),
-      viewHidePasswordImage: require('../../assets/hidePassword.png')
+      viewHidePasswordImage: require('../../assets/hidePassword.png'),
     };
   }
   componentDidMount() {}
-  loginUser(username,password)
-  {
-      this.props.authenticate_User(username,password).then(resolve=>{
-
-        if(resolve==200)
-        {
-          alert("Login Successfull")
+  loginUser(username, password) {
+    this.props.authenticate_User(username, password).then(
+      resolve => {
+        if (resolve == 200) {
+          alert('Login Successfull');
+          this.setState({ isLoading : false})
+          this.props.navigation.navigate("MyDrawer")
         }
-      },reject=>{
-
-        if(reject=="ERROR")
-          alert("Wrong Credentials")
-          else 
-              alert("Cannot process your request. Please try again later!")
-      })
-
+      },
+      reject => {
+        if (reject == 'ERROR') alert('Wrong Credentials');
+        else alert('Cannot process your request. Please try again later!');
+          this.setState({ isLoading : false});
+      },
+    );
   }
+  
 
   render() {
-      const { username,password }=this.state;
-      
-      
+    const {username, password, isLoading} = this.state;
+    console.log("props",this.props)
+
     return (
       <SafeAreaView style={style.container}>
-        <View style={style.upperHeading}>
-          <View style={style.topSection}>
-            <TouchableOpacity>
-              <Text style={style.loginTextStyling}> Login</Text>
-            </TouchableOpacity>
-          </View>
+        { isLoading ? (
+          <ActivityWaiter />
+        ) : (
+          <View style={{flex: 1}}>
+           
+           
 
-          <View style={style.topSection}>
-            <TouchableOpacity>
-              <Text style={style.SignUpTextStyling}>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={style.middleSection}>
-          <View style={style.middleSectionStyling}>
-            <View style={style.addUserViewStyling}>
-              <Image
-                source={this.state.imagePath}
-                style={style.addUserStyling}
-              />
-            </View>
-            <View style={style.userNameView}>
-              <TextInput
-                placeholder={'Username or email address'}
-                
-                defaultValue={"Test22"}
-                onChangeText={text=>{ this.setState({username:text})}}
-                style={{
-                  fontSize: 26,
-                  paddingBottom: 10,
-                  borderBottomColor: 'grey',
-                  borderBottomWidth: 1,
-                  paddingLeft: 3,
-                }}
-              />
-            </View>
-
-            <View style={style.passwordView}>
-              <TextInput
-                placeholder={'Password'}
-                defaultValue={"test1@_"}
-                onChangeText={text=>{ this.setState({password:text})}}
-                style={{
-                  fontSize: 24,
-                  paddingBottom: 10,
-                  paddingTop: 15,
-                  flex: 8,
-                  paddingLeft: 3,
-                }}
-                secureTextEntry={this.state.hidePassword}
-              />
-              <View style={{flex: 2, justifyContent: 'flex-end'}}>
-                <TouchableOpacity onPress={()=>{
-                    this.setState({hidePassword:!this.state.hidePassword})
-
-                }}>
+            <View style={style.middleSection}>
+              <View style={style.middleSectionStyling}>
+                <View style={style.addUserViewStyling}>
                   <Image
-                    source={this.state.hidePassword? this.state.viewPasswordImage: this.state.viewHidePasswordImage}
-                    style={style.viewPasswordImage}
+                    source={this.state.imagePath}
+                    style={style.addUserStyling}
+                  />
+                </View>
+                <View style={style.userNameView}>
+                  <TextInput
+                    placeholder={'Username or email address'}
+                    defaultValue={'Test22'}
+                    onChangeText={text => {
+                      this.setState({username: text});
+                    }}
+                    style={{
+                      fontSize: 26,
+                      paddingBottom: 10,
+                      borderBottomColor: 'grey',
+                      borderBottomWidth: 1,
+                      paddingLeft: 3,
+                    }}
+                  />
+                </View>
+
+                <View style={style.passwordView}>
+                  <TextInput
+                    placeholder={'Password'}
+                    defaultValue={'test1@_'}
+                    onChangeText={text => {
+                      this.setState({password: text});
+                    }}
+                    style={{
+                      fontSize: 24,
+                      paddingBottom: 10,
+                      paddingTop: 15,
+                      flex: 8,
+                      paddingLeft: 3,
+                    }}
+                    secureTextEntry={this.state.hidePassword}
+                  />
+                  <View style={{flex: 2, justifyContent: 'flex-end'}}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.setState({hidePassword: !this.state.hidePassword});
+                      }}>
+                      <Image
+                        source={
+                          this.state.hidePassword
+                            ? this.state.viewPasswordImage
+                            : this.state.viewHidePasswordImage
+                        }
+                        style={style.viewPasswordImage}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    backgroundColor: 'white',
+                    justifyContent: 'flex-end',
+                  }}>
+                  <Image
+                    source={this.state.image2path}
+                    style={style.image2pathstyling}
+                  />
+                </View>
+
+                <View style={{marginVertical: 20}}>
+                  <View style={style.signInButtonView}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.loginUser(username, password);
+                        this.setState({isLoading: true});
+                      }}>
+                      <View style={style.signInButton}>
+                        <Text
+                          style={{
+                            fontSize: 24,
+                            alignSelf: 'center',
+                            color: 'blue',
+                            paddingVertical: 13,
+                            fontWeight:"600"
+                          }}>
+                          LOG IN
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={style.footer}>
+              <Text style={style.footerText}>Login with</Text>
+
+              <View style={style.socialLoginStyling}>
+                <TouchableOpacity>
+                  <Image
+                    source={this.state.googlePlusIcon}
+                    style={style.socialIconStyling}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    source={this.state.githubIcon}
+                    style={style.socialIconStyling}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    source={this.state.twitterIcon}
+                    style={style.socialIconStyling}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    source={this.state.facebookIcon}
+                    style={style.socialIconStyling}
                   />
                 </TouchableOpacity>
               </View>
             </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                backgroundColor: 'white',
-                justifyContent: 'flex-end',
-              }}>
-              <Image
-                source={this.state.image2path}
-                style={style.image2pathstyling}
-              />
-            </View>
-
-            <View style={{marginVertical: 20}}>
-              <View style={style.signInButtonView}>
-                <TouchableOpacity onPress={()=>{
-                  this.loginUser(username,password)
-
-
-                }}>
-                  <View style={style.signInButton}>
-                    <Text
-                      style={{
-                        fontSize: 24,
-                        alignSelf: 'center',
-                        color: 'blue',
-                        paddingVertical: 13,
-                      }}>
-                      LOG IN
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
           </View>
-        </View>
-        <View style={style.footer}>
-          <Text style={style.footerText}>Login with</Text>
-
-          <View style={style.socialLoginStyling}>
-            <TouchableOpacity>
-              <Image
-                source={this.state.googlePlusIcon}
-                style={style.socialIconStyling}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={this.state.githubIcon}
-                style={style.socialIconStyling}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={this.state.twitterIcon}
-                style={style.socialIconStyling}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={this.state.facebookIcon}
-                style={style.socialIconStyling}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+        )}
       </SafeAreaView>
     );
   }
@@ -264,8 +269,9 @@ const style = StyleSheet.create({
   },
   upperHeading: {
     flex: 2,
+    justifyContent:"center"
 
-    flexDirection: 'row',
+   
   },
   middleSection: {
     flex: 6,
@@ -294,8 +300,7 @@ const style = StyleSheet.create({
 
 const mapStateToProps = state => ({});
 const mapDispatchToProps = {
-
-  authenticate_User: authenticate_User
+  authenticate_User: authenticate_User,
 };
 
 export default connect(
