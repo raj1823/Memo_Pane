@@ -12,17 +12,46 @@ import {
 import {connect} from 'react-redux';
 
 
+
 class Logout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      
-    };
-  }
+    this.state={
+      data: [{
+        value: 'Fruit',
+        label: 'Banana'
+      }, {
+        value: 'Vegetable',
+        label: 'Tomato'
+      }, {
+        value: 'Fruit',
+        label: 'Pear'
+      }],
+      value: ''
+      }
+    }
+  
+
   componentDidMount() {}
   
   
   render() {
+    let data = [
+      {
+        value: 'Personal',
+      },
+      {
+        value: 'Work',
+      },
+      {
+        value: 'Ideas',
+      },
+      {
+        value: 'Lists',
+      },
+    ];
+
+    
     
     return (
         
@@ -30,6 +59,7 @@ class Logout extends React.Component {
         <Text style={{fontSize:30}}>Gupta</Text>
         
       </View>
+  
       
       
     );

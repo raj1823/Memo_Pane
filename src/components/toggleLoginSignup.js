@@ -26,7 +26,8 @@ const style = StyleSheet.create({
   },
 });
 
-export function ToggleSignIn_SignUp() {
+export function ToggleSignIn_SignUp(props) {
+  //console.log("login props",props)
   const [toggle, setToggle] = useState(1);
   console.log('toggle', toggle);
   const [activeText, setActiveText] = useState('Login');
@@ -70,7 +71,7 @@ export function ToggleSignIn_SignUp() {
         </View>
       </View>
 
-      <View style={{flex: 8}}>{toggle ? <Login /> : <SignUp />}</View>
+      <View style={{flex: 8}}>{toggle ? <Login props={props} /> : <SignUp props={props} />}</View>
     </View>
   );
 }

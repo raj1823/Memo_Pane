@@ -5,6 +5,7 @@ import Home from './src/components/home';
 import {ToggleSignIn_SignUp} from './src/components/toggleLoginSignup';
 import {NavigationContainer} from '@react-navigation/native';
 import Logout from './src/components/logout';
+import NoteEditor from './src/components/noteEditor'
 
 const Drawer = createDrawerNavigator();
 
@@ -12,9 +13,9 @@ const Stack = createStackNavigator();
 
 function myDrawer() {
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator >
       <Drawer.Screen
-        options={{headerShown: false}}
+        //options={{headerShown: false}}
         name="Home"
         component={Home}
       />
@@ -26,24 +27,31 @@ function myDrawer() {
 function myApp() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator >
 
-      {/* <Stack.Screen
-          options={{headerShown: false}}
-          name="Home"
-          component={Home}
-        /> */}
+      
+       
         <Stack.Screen
           options={{headerShown: false}}
           name="SignIn_SignUp"
           component={ToggleSignIn_SignUp}
         />
-
-        <Stack.Screen
+         <Stack.Screen
           options={{headerShown: false}}
           name="MyDrawer"
           component={myDrawer}
         />
+        
+        <Stack.Screen
+           options={{headerShown:false}}
+          name="My Note"
+          component={NoteEditor}
+        />
+         
+        
+        
+
+       
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -11,7 +11,7 @@ import {
 import {connect} from 'react-redux';
 import {TextInput} from 'react-native';
 import ActivityWaiter from '../components/activityWaiter';
-import {authenticate_User,register_User} from '../services/Authentication/action';
+import {register_User} from '../services/Authentication/action';
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -41,7 +41,7 @@ class SignUp extends React.Component {
           if (resolve == 200) {
             alert('Registration Successfull');
             this.setState({isLoading: false});
-            this.props.navigation.navigate('MyDrawer');
+            this.props.props.navigation.navigate('MyDrawer');
           }
         },
         reject => {
@@ -61,7 +61,7 @@ class SignUp extends React.Component {
 
   render() {
     const { isLoading} = this.state;
-    console.log('props', this.props);
+    console.log("props in sign Up",this.props)
     console.log("isLoading",isLoading)
 
     return (
@@ -320,7 +320,7 @@ const style = StyleSheet.create({
 
 const mapStateToProps = state => ({});
 const mapDispatchToProps = {
-  authenticate_User: authenticate_User,
+  
   register_User: register_User
 };
 

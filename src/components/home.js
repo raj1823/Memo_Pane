@@ -22,6 +22,7 @@ class Home extends React.Component {
   componentDidMount() {}
 
   render() {
+    console.log("home props",this.props)
     return (
       <SafeAreaView style={style.container}>
         <View style={style.header}>
@@ -77,7 +78,9 @@ class Home extends React.Component {
                 style={{
                   width: '40%',
                 }}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>{
+              this.props.navigation.openDrawer()
+            }}>
                   <Image
                     source={this.state.menuIcon}
                     style={style.menuIconStyling}
@@ -88,7 +91,10 @@ class Home extends React.Component {
 
             <View style={style.addNoteView}>
               <View style={style.addButtonWrapper}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>{
+
+                  this.props.navigation.navigate("My Note")
+                }}>
                   <Image
                     source={this.state.addIcon}
                     style={style.addIconStyling}

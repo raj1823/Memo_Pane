@@ -15,7 +15,8 @@ import {authenticate_User} from '../services/Authentication/action';
 
 class Login extends React.Component {
   constructor(props) {
-    super(props);
+    //console.log("props in const",props)
+    super(props)
     this.state = {
       hidePassword: true,
       username: 'Test22',
@@ -36,9 +37,9 @@ class Login extends React.Component {
     this.props.authenticate_User(username, password).then(
       resolve => {
         if (resolve == 200) {
-          alert('Login Successfull');
+         
           this.setState({ isLoading : false})
-          this.props.navigation.navigate("MyDrawer")
+          this.props.props.navigation.navigate("MyDrawer")
         }
       },
       reject => {
