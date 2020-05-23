@@ -1,5 +1,5 @@
 import API from '../../config/env';
-import {AUTHENTICATION_SUCCESS} from './constant'
+import {AUTHENTICATION_SUCCESS,ADD_TOKEN} from './constant'
 
 
 
@@ -44,9 +44,10 @@ export function authenticate_User(username,password) {
             console.log("response in:",response)
 
             if(response.status==true)
-            {    
+            {    dispatch({type : ADD_TOKEN, token : response.id})
+                 //dispatch({type:AUTHENTICATION_SUCCESS})
                 resolve(200)
-                dispatch({type:AUTHENTICATION_SUCCESS})
+                
 
             }
             else{

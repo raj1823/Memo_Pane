@@ -12,10 +12,11 @@ import {
   } from './constant';
 
   const initialState = {
-    personalCount:0,
-    workCount:0,
-    ideasCount:0,
-    listCount:0,
+    
+    personalCount : 0,
+    workCount : 0,
+    ideasCount : 0,
+    listCount : 0,
     
   
    
@@ -29,28 +30,28 @@ import {
         return {
           ...state,
   
-          personalCount : personalCount+1
+          personalCount : state.personalCount+1
   
         };
         case SUBTRACT_PERSONAL_COUNT:
         return {
           ...state,
   
-          personalCount : personalCount-1
+          personalCount : state.personalCount-1
   
         };
         case ADD_WORK_COUNT:
         return {
           ...state,
   
-          workCount : workCount+1
+          workCount : state.workCount+1
   
         };
         case SUBTRACT_WORK_COUNT:
             return {
               ...state,
       
-              workCount : workCount-1
+              workCount : state.workCount-1
       
             };
 
@@ -58,33 +59,33 @@ import {
             return {
                 ...state,
           
-                ideasCount : ideasCount+1
+                ideasCount : state.ideasCount+1
           
                 };
          case SUBTRACT_IDEAS_COUNT:
             return {
                 ...state,
           
-                ideasCount : ideasCount-1
+                ideasCount : state.ideasCount-1
           
                 };   
         case ADD_LIST_COUNT:
             return {
                 ...state,
           
-                listCount : listCount+1
+                listCount : state.listCount+1
           
                 };  
          case SUBTRACT_LIST_COUNT:
             return {
                 ...state,
           
-                ideasCount : ideasCount-1
+                ideasCount : state.ideasCount-1
           
                 };        
       
         default:
-            return state;
+            return { ...state}
         }
       };
       

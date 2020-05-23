@@ -209,6 +209,8 @@ const mapStateToProps = state => ({
   workCount: state.data_Reducer.workCount,
   ideasCount: state.data_Reducer.ideasCount,
   listCount: state.data_Reducer.listCount,
+
+  token: state.authenticate_Reducer.token
 });
 const mapDispatchToProps = {};
 

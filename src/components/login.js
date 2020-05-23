@@ -37,7 +37,7 @@ class Login extends React.Component {
     this.props.authenticate_User(username, password).then(
       resolve => {
         if (resolve == 200) {
-         
+           
           this.setState({ isLoading : false})
           this.props.props.navigation.navigate("MyDrawer")
         }
