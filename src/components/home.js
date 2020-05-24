@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
+import {viewOpenCategoryNotes} from '../services/Data/action'
 
 class Home extends React.Component {
   constructor(props) {
@@ -17,9 +18,18 @@ class Home extends React.Component {
     this.state = {
       menuIcon: require('../../assets/hamburger.png'),
       addIcon: require('../../assets/add.png'),
+      selectedCategory:''
     };
   }
   componentDidMount() {}
+
+  openNotes(){
+    this.props.navigation.navigate("viewNotes")
+    console.log("selected Category in home", this.state.selectedCategory)
+    this.props.viewOpenCategoryNotes(this.state.selectedCategory)
+
+
+  }
 
   render() {
     console.log("home props",this.props)
@@ -38,36 +48,62 @@ class Home extends React.Component {
 
         <View style={style.middleSection}>
           <View style={style.middleViewWrapper}>
+            <TouchableOpacity onPress={()=>{
+
+             this.setState({selectedCategory:"Personal"},()=>this.openNotes())
+              
+            }}>
+
+        
             <View style={style.middleTextView}>
               <Text style={style.notesTypeStyling}>Personal</Text>
               <Text style={style.notesCountStyling}>
                 {this.props.personalCount}
               </Text>
             </View>
+            </TouchableOpacity>
           </View>
           <View style={style.middleViewWrapper}>
+            <TouchableOpacity onPress={()=>{
+
+this.setState({selectedCategory:"Work"},()=>this.openNotes())
+ 
+}}>
             <View style={style.middleTextView}>
               <Text style={style.notesTypeStyling}>Work</Text>
               <Text style={style.notesCountStyling}>
                 {this.props.workCount}
               </Text>
             </View>
+            </TouchableOpacity>
           </View>
           <View style={style.middleViewWrapper}>
+          <TouchableOpacity onPress={()=>{
+
+this.setState({selectedCategory:"Ideas"},()=>this.openNotes())
+ 
+}}>
             <View style={style.middleTextView}>
               <Text style={style.notesTypeStyling}>Ideas</Text>
               <Text style={style.notesCountStyling}>
                 {this.props.ideasCount}
               </Text>
             </View>
+            </TouchableOpacity>
           </View>
           <View style={style.middleViewWrapper}>
+          <TouchableOpacity onPress={()=>{
+
+this.setState({selectedCategory:"Lists"},()=>this.openNotes())
+ 
+}}>
             <View style={style.middleTextView}>
               <Text style={style.notesTypeStyling}>Lists</Text>
               <Text style={style.notesCountStyling}>
                 {this.props.listCount}
               </Text>
             </View>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -170,7 +206,7 @@ const style = StyleSheet.create({
   },
   middleTextView: {
     marginVertical: 15,
-
+   
     flexDirection: 'row',
     marginHorizontal: 20,
   },
@@ -212,7 +248,9 @@ const mapStateToProps = state => ({
 
   token: state.authenticate_Reducer.token
 });
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  viewOpenCategoryNotes : viewOpenCategoryNotes
+};
 
 export default connect(
   mapStateToProps,

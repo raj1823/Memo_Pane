@@ -5,6 +5,7 @@ import Home from './src/components/home';
 import {ToggleSignIn_SignUp} from './src/components/toggleLoginSignup';
 import {NavigationContainer} from '@react-navigation/native';
 import Logout from './src/components/logout';
+import ViewNotes from './src/components/viewNotes'
 import NoteEditor from './src/components/noteEditor'
 
 const Drawer = createDrawerNavigator();
@@ -46,6 +47,12 @@ function myApp() {
            options={{headerShown:false}}
           name="My Note"
           component={NoteEditor}
+        />
+
+       <Stack.Screen
+           options={{headerShown:false}}
+          name="viewNotes"
+          component={ViewNotes}
         />
          
         
