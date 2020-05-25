@@ -12,7 +12,8 @@ import {
   PERSONAL,
   WORK,
   IDEAS,
-  LISTS
+  LISTS,
+  USER_NOTES
 } from './constant';
 
 const initialState = {
@@ -23,11 +24,20 @@ const initialState = {
   noteTitle: '',
   noteData: '',
   selectedCategory : '',
-  selectedCategoryNotesCount : null
+  selectedCategoryNotesCount : null,
+  userNotes:[],
+  personalNotes:[]
 };
 
 const data_Reducer = (state = initialState, action) => {
+
+  console.log("action called:",action.type)
   switch (action.type) {
+    case USER_NOTES: return{
+
+      ...state, 
+      userNotes: action.data
+    }
     case PERSONAL : return{
       ...state, 
       selectedCategory : "Personal",

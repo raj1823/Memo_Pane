@@ -10,7 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {viewOpenCategoryNotes} from '../services/Data/action'
+import {viewOpenCategoryNotes,loadUserNotes} from '../services/Data/action'
 
 class Home extends React.Component {
   constructor(props) {
@@ -21,7 +21,16 @@ class Home extends React.Component {
       selectedCategory:''
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    console.log("did mount called")
+    
+  }
+
+  static getDerivedStateFromProps(props,state){
+    console.log("get derived called-------------",props.token)
+    props.loadUserNotes(props.token)
+    return null
+  }
 
   openNotes(){
     this.props.navigation.navigate("viewNotes")
@@ -249,7 +258,8 @@ const mapStateToProps = state => ({
   token: state.authenticate_Reducer.token
 });
 const mapDispatchToProps = {
-  viewOpenCategoryNotes : viewOpenCategoryNotes
+  viewOpenCategoryNotes : viewOpenCategoryNotes,
+  loadUserNotes : loadUserNotes
 };
 
 export default connect(

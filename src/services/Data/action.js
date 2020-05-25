@@ -8,10 +8,13 @@ import {
   PERSONAL,
   WORK,
   IDEAS,
-  LISTS
+  LISTS,
+  USER_NOTES
 } from './constant';
 
 import API from '../../config/env';
+
+
 
 export function updateHome(category) {
   console.log(category, 'category');
@@ -112,5 +115,81 @@ export function addMyNote(title, data, token) {
     } catch (error) {
       alert('API_ERROR');
     }
+  };
+}
+
+
+export function loadUserNotes(token) {
+  let loadNotesAPI = API.apiConfig.fetchDataApi.fetchNotes;
+  console.log('load notes Api:', loadNotesAPI+token);
+  return dispatch => {
+
+   
+
+      try {
+    
+
+        fetch(loadNotesAPI+ token, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'content-type': 'application/json',
+          },
+      
+        })
+          .then(res => {
+            console.log('load note status', res.status);
+  
+            if (res.status >= 200 && res.status <= 300) {
+              return res.json();
+            } else {}
+          })
+          .then(response => {
+            console.log('data response:', response);
+  
+            if (response.status === true) {
+              //resolve(200)
+              dispatch({type: USER_NOTES, data: response.response})
+            } else {
+              alert('Cannot load Notes at this moment!');
+            }
+          })
+      
+      } catch (error) {
+        alert('API_ERROR');
+      }
+
+
+    
+   
+  };
+}
+
+export function deleteNote(token,noteId) {
+  let deleteNoteAPI = API.apiConfig.deleteData.deleteNote
+  console.log('delete note Api:', deleteNoteAPI+token+noteId);
+  return dispatch => {
+return new Promise(function(resolve, reject) {
+  try {
+    fetch(deleteNoteAPI + token+"/"+noteId, {
+      method: "DELETE",
+    }).then(res => {
+      if (res.status >= 200 && res.status <= 300){
+
+       resolve(200)
+      } 
+      else reject('ERROR');
+    });
+  } catch (error) {
+    reject('ERROR');
+  }
+})
+   
+
+    
+
+
+    
+   
   };
 }

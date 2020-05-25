@@ -19,8 +19,8 @@ class Login extends React.Component {
     super(props)
     this.state = {
       hidePassword: true,
-      username: 'Test22',
-      password: 'test1@_',
+      username: 'Raj1823',
+      password: '11111111',
       isLoading: false,
       imagePath: require('../../assets/addUser.png'),
       viewPasswordImage: require('../../assets/viewPassword.png'),
@@ -75,7 +75,7 @@ class Login extends React.Component {
                 <View style={style.userNameView}>
                   <TextInput
                     placeholder={'Username or email address'}
-                    defaultValue={'Test22'}
+                    defaultValue={'Raj1823'}
                     onChangeText={text => {
                       this.setState({username: text});
                     }}
@@ -92,7 +92,7 @@ class Login extends React.Component {
                 <View style={style.passwordView}>
                   <TextInput
                     placeholder={'Password'}
-                    defaultValue={'test1@_'}
+                    defaultValue={'11111111'}
                     onChangeText={text => {
                       this.setState({password: text});
                     }}

@@ -50,7 +50,7 @@ function myApp() {
         />
 
        <Stack.Screen
-           options={{headerShown:false}}
+           //options={{headerShown:false}}
           name="viewNotes"
           component={ViewNotes}
         />
