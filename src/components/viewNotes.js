@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import CardView from 'react-native-cardview';
-import {deleteNote, loadUserNotes} from '../services/Data/action'
+import {deleteNote, loadUserNotes, setNoteData,updateHome} from '../services/Data/action';
 
 class ViewNotes extends React.Component {
   constructor(props) {
@@ -21,22 +21,25 @@ class ViewNotes extends React.Component {
     };
   }
 
-  deleteNote(noteId){
+  updateDashboard(){
+   
+    this.props.updateHome("delete"+this.props.noteTitle)
+  }
 
-    this.props.deleteNote(this.props.token,noteId).then(
-        resolve => {
-          if (resolve == 200) {
-           this.props.loadUserNotes(this.props.token)
-          }},
-                      
-           reject => {
-            if(reject=="ERROR")
-            {
-            alert('Cannot Delete Record');
-            
-            }
-          })
-                      
+  deleteNote(noteId) {
+    this.props.deleteNote(this.props.token, noteId).then(
+      resolve => {
+        if (resolve == 200) {
+          this.props.loadUserNotes(this.props.token);
+        }
+      },
+
+      reject => {
+        if (reject == 'ERROR') {
+          alert('Cannot Delete Record');
+        }
+      },
+    );
   }
 
   componentDidMount() {}
@@ -44,6 +47,11 @@ class ViewNotes extends React.Component {
   render() {
     const {noteTitle, noteCount} = this.props;
     console.log('notes:', this.props.userNotes);
+    var notes= this.props.userNotes.filter((item)=>{
+
+        if(item.data.split("$$$")[0]===noteTitle)
+        return item
+    })
 
     return (
       <SafeAreaView style={style.container}>
@@ -56,7 +64,7 @@ class ViewNotes extends React.Component {
 
         <View style={style.notesViewStyling}>
           <FlatList
-            data={this.props.userNotes}
+            data={notes}
             renderItem={({item}) => {
               return (
                 <CardView
@@ -64,50 +72,80 @@ class ViewNotes extends React.Component {
                   cardMaxElevation={7}
                   cornerRadius={4}
                   style={style.cardviewStyling}>
-                      <View>
+                  <View style={{}}>
+                    <View style={{flexDirection: 'row'}}>
+                      <View style={{width: '80%'}}>
+                        <Text style={style.cardViewTextStyling}>
+                          {item.title}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          justifyContent: 'center',
 
-               
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={{width: '80%'}}>
-                      <Text style={style.cardViewTextStyling}>
-                        {item.title}
-                      </Text>
-                    
+                          width: '20%',
+                          marginVertical: 15,
+                          alignItems: 'center',
+                        }}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.deleteNote(item.id);
+                            this.updateDashboard()
+                          }}>
+                          <Image
+                            source={this.state.deleteIcon}
+                            style={{
+                              height: 35,
+                              width: 35,
+                              resizeMode: 'contain',
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                     <View
                       style={{
-                        justifyContent: 'center',
-                    
-                        width: '20%',
-                        marginVertical:15,
-                        alignItems: 'center',
+                        flexDirection: 'row',
                       }}>
-                      <TouchableOpacity onPress={()=>{
-                          this.deleteNote(item.id)
-                      }}>
-                        <Image
-                          source={this.state.deleteIcon}
-                          style={{
-                            height: 35,
-                            width: 35,
-                            resizeMode: 'contain',
-                           
-                          }}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View>
-                  <Text
+                      <View
                         style={{
-                          fontSize: 14,
-                          marginLeft: 10,
-                          marginVertical: 7,
-                          color: '#444987',
+                          flex: 2,
+                         // backgroundColor: 'orange',
+                          justifyContent: 'center',
                         }}>
-                        {item.data}
-                      </Text>
-                  </View>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            marginLeft: 10,
+                            marginVertical: 7,
+                            color: '#444987',
+                          }}>
+                          {item.data.split("$$$")[1]}
+                        </Text>
+                      </View>
+
+                      <View
+                        style={{
+                          flex: 1,
+                         // backgroundColor: 'cyan',
+                          justifyContent: 'center',
+                        }}>
+                        <TouchableOpacity onPress={() => {
+
+                            this.props.setNoteData(item.title,item.data)
+                            this.props.navigation.navigate("My Note")
+                        }}>
+                          <Text
+                            style={{
+                              color: '#e62c2c',
+                              fontSize: 18,
+                              fontWeight: '600',
+                            }}>
+                            View note...
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
                   </View>
                 </CardView>
               );
@@ -178,11 +216,13 @@ const mapStateToProps = state => ({
   noteTitle: state.data_Reducer.selectedCategory,
   noteCount: state.data_Reducer.selectedCategoryNotesCount,
   userNotes: state.data_Reducer.userNotes,
-  token: state.authenticate_Reducer.token
+  token: state.authenticate_Reducer.token,
 });
 const mapDispatchToProps = {
-    deleteNote : deleteNote,
-    loadUserNotes : loadUserNotes
+  deleteNote: deleteNote,
+  loadUserNotes: loadUserNotes,
+  setNoteData: setNoteData,
+  updateHome : updateHome
 };
 
 export default connect(

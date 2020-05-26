@@ -3,6 +3,10 @@ import {
   ADD_IDEAS_COUNT,
   ADD_LIST_COUNT,
   ADD_WORK_COUNT,
+  SUBTRACT_LIST_COUNT,
+  SUBTRACT_IDEAS_COUNT,
+  SUBTRACT_PERSONAL_COUNT,
+  SUBTRACT_WORK_COUNT,
   SET_NOTE_DATA,
   CLEAR_NOTE_DATA,
   PERSONAL,
@@ -34,6 +38,18 @@ export function updateHome(category) {
       case 'Lists':
         dispatch({type: ADD_LIST_COUNT});
         break;
+        case 'deletePersonal':
+          dispatch({type: SUBTRACT_PERSONAL_COUNT});
+          break;
+          case 'deleteIdeas':
+            dispatch({type: SUBTRACT_IDEAS_COUNT});
+            break;
+            case 'deleteWork':
+              dispatch({type: SUBTRACT_WORK_COUNT});
+              break;
+              case 'deleteLists':
+                dispatch({type: SUBTRACT_PERSONAL_COUNT});
+                break;
     }
   };
 }
@@ -149,7 +165,7 @@ export function loadUserNotes(token) {
   
             if (response.status === true) {
               //resolve(200)
-              dispatch({type: USER_NOTES, data: response.response})
+              dispatch({type: USER_NOTES, data: response.response.reverse()})
             } else {
               alert('Cannot load Notes at this moment!');
             }
