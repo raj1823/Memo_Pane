@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Alert
 } from 'react-native';
 import {LoginButton, AccessToken, LoginManager} from 'react-native-fbsdk';
 import {connect} from 'react-redux';
@@ -24,8 +25,8 @@ class Login extends React.Component {
     super(props);
     this.state = {
       hidePassword: true,
-      username: 'raj123',
-      password: 'raj@123',
+      username: 'raj1234',
+      password: 'raj@1234',
       isLoading: false,
       imagePath: require('../../assets/addUser.png'),
       viewPasswordImage: require('../../assets/viewPassword.png'),
@@ -69,9 +70,23 @@ class Login extends React.Component {
         }
       },
       reject => {
-        if (reject == 'ERROR') alert('Wrong Credentials');
-        else alert('Cannot process your request. Please try again later!');
-        this.setState({isLoading: false});
+        if (reject == 'ERROR') 
+        {
+          Alert.alert('Wrong Credentials',"",
+          [ 
+            { text: 'OK',
+              onPress: () => this.setState({isLoading:false})
+            },
+          ]
+
+              );
+         
+          
+        }
+       else {
+        Alert.alert('Cannot process your request. Please try again later!',"",
+          [ { text: 'OK', onPress: () => this.setState({isLoading:false})   }]);
+      }
       },
     );
   }
