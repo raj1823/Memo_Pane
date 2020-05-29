@@ -13,12 +13,123 @@ import {
   WORK,
   IDEAS,
   LISTS,
-  USER_NOTES
+  USER_NOTES,
+  SET_COUNTS,
+  LOGOUT,
 } from './constant';
 
 import API from '../../config/env';
 
+export const isLoggedOut = () => dispatch => {
+  dispatch({
+    type: LOGOUT,
+  });
+};
 
+export function setCountsView(data) {
+  console.log('XXXXXXXXXXXXXXXXXXXXXXXXX');
+  console.log('note DATA(array):', data);
+
+  let count_data = {
+    pc: 0,
+    wc: 0,
+    ic: 0,
+    lc: 0,
+  };
+
+  data.forEach(item => {
+    switch (item.data.split('$$$')[0]) {
+      case 'Personal':
+        count_data.pc++;
+        break;
+      case 'Ideas':
+        count_data.ic++;
+        break;
+      case 'Work':
+        count_data.wc++;
+        break;
+      case 'Lists':
+        count_data.lc++;
+        break;
+    }
+  });
+  console.log('count data after loop', count_data);
+  return ({type: SET_COUNTS, count_data: count_data});
+}
+
+export function loadUserNotes(token) {
+  let loadNotesAPI = API.apiConfig.fetchDataApi.fetchNotes;
+  console.log('load notes Api:', loadNotesAPI + token);
+  return dispatch => {
+    try {
+      fetch(loadNotesAPI + token, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'content-type': 'application/json',
+        },
+      })
+        .then(res => {
+          console.log('load note status', res.status);
+
+          if (res.status >= 200 && res.status <= 300) {
+            return res.json();
+          } else {
+          }
+        })
+        .then(response => {
+          console.log('data response:', response);
+
+          if (response.status === true) {
+            //resolve(200)
+            dispatch(setCountsView(response.response));
+            dispatch({type: USER_NOTES, data: response.response.reverse()});
+          } else {
+            alert('Cannot load Notes at this moment!');
+          }
+        });
+    } catch (error) {
+      alert('API_ERROR');
+    }
+  };
+}
+export function loadUserNotesDescription(token) {
+  let loadNotesAPI = API.apiConfig.fetchDataApi.fetchNotes;
+  console.log('load notes Api:', loadNotesAPI + token);
+  return dispatch => {
+    try {
+      fetch(loadNotesAPI + token, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'content-type': 'application/json',
+        },
+      })
+        .then(res => {
+          console.log('load note status', res.status);
+
+          if (res.status >= 200 && res.status <= 300) {
+            return res.json();
+          } else {
+          }
+        })
+        .then(response => {
+          console.log('data response:', response);
+
+          if (response.status === true) {
+            //resolve(200)
+           
+            dispatch({type: USER_NOTES, data: response.response.reverse()});
+          } else {
+            alert('Cannot load Notes at this moment!');
+            
+          }
+        });
+    } catch (error) {
+      alert('API_ERROR');
+    }
+  };
+}
 
 export function updateHome(category) {
   console.log(category, 'category');
@@ -38,18 +149,18 @@ export function updateHome(category) {
       case 'Lists':
         dispatch({type: ADD_LIST_COUNT});
         break;
-        case 'deletePersonal':
-          dispatch({type: SUBTRACT_PERSONAL_COUNT});
-          break;
-          case 'deleteIdeas':
-            dispatch({type: SUBTRACT_IDEAS_COUNT});
-            break;
-            case 'deleteWork':
-              dispatch({type: SUBTRACT_WORK_COUNT});
-              break;
-              case 'deleteLists':
-                dispatch({type: SUBTRACT_PERSONAL_COUNT});
-                break;
+      case 'deletePersonal':
+        dispatch({type: SUBTRACT_PERSONAL_COUNT});
+        break;
+      case 'deleteIdeas':
+        dispatch({type: SUBTRACT_IDEAS_COUNT});
+        break;
+      case 'deleteWork':
+        dispatch({type: SUBTRACT_WORK_COUNT});
+        break;
+      case 'deleteLists':
+        dispatch({type: SUBTRACT_LIST_COUNT});
+        break;
     }
   };
 }
@@ -66,7 +177,7 @@ export function clearNoteData() {
   };
 }
 
-export function  viewOpenCategoryNotes(category) {
+export function viewOpenCategoryNotes(category) {
   return dispatch => {
     switch (category) {
       case 'Personal':
@@ -89,10 +200,10 @@ export function  viewOpenCategoryNotes(category) {
 
 export function addMyNote(title, data, token) {
   let createNoteAPI = API.apiConfig.createApi.createNotes;
-  console.log('login Api:', createNoteAPI+token);
+  console.log('login Api:', createNoteAPI + token);
   return dispatch => {
     try {
-      console.log('------------------', title,data);
+      console.log('------------------', title, data);
 
       fetch(createNoteAPI + token, {
         method: 'PUT',
@@ -103,8 +214,8 @@ export function addMyNote(title, data, token) {
         body: JSON.stringify({
           notes: [
             {
-              "title": title,
-              "data": data,
+              title: title,
+              data: data,
             },
           ],
         }),
@@ -120,7 +231,6 @@ export function addMyNote(title, data, token) {
           console.log('response in:', response);
 
           if (response.status == true) {
-            
           } else {
             alert('Cannot add Note at this moment!');
           }
@@ -134,78 +244,22 @@ export function addMyNote(title, data, token) {
   };
 }
 
-
-export function loadUserNotes(token) {
-  let loadNotesAPI = API.apiConfig.fetchDataApi.fetchNotes;
-  console.log('load notes Api:', loadNotesAPI+token);
+export function deleteNote(token, noteId) {
+  let deleteNoteAPI = API.apiConfig.deleteData.deleteNote;
+  console.log('delete note Api:', deleteNoteAPI + token + noteId);
   return dispatch => {
-
-   
-
+    return new Promise(function(resolve, reject) {
       try {
-    
-
-        fetch(loadNotesAPI+ token, {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'content-type': 'application/json',
-          },
-      
-        })
-          .then(res => {
-            console.log('load note status', res.status);
-  
-            if (res.status >= 200 && res.status <= 300) {
-              return res.json();
-            } else {}
-          })
-          .then(response => {
-            console.log('data response:', response);
-  
-            if (response.status === true) {
-              //resolve(200)
-              dispatch({type: USER_NOTES, data: response.response.reverse()})
-            } else {
-              alert('Cannot load Notes at this moment!');
-            }
-          })
-      
+        fetch(deleteNoteAPI + token + '/' + noteId, {
+          method: 'DELETE',
+        }).then(res => {
+          if (res.status >= 200 && res.status <= 300) {
+            resolve(200);
+          } else reject('ERROR');
+        });
       } catch (error) {
-        alert('API_ERROR');
+        reject('ERROR');
       }
-
-
-    
-   
-  };
-}
-
-export function deleteNote(token,noteId) {
-  let deleteNoteAPI = API.apiConfig.deleteData.deleteNote
-  console.log('delete note Api:', deleteNoteAPI+token+noteId);
-  return dispatch => {
-return new Promise(function(resolve, reject) {
-  try {
-    fetch(deleteNoteAPI + token+"/"+noteId, {
-      method: "DELETE",
-    }).then(res => {
-      if (res.status >= 200 && res.status <= 300){
-
-       resolve(200)
-      } 
-      else reject('ERROR');
     });
-  } catch (error) {
-    reject('ERROR');
-  }
-})
-   
-
-    
-
-
-    
-   
   };
 }

@@ -13,4 +13,6 @@ export const WORK = "WORK"
 export const IDEAS = "IDEAS"
 export const LISTS = "LISTS"
 export const USER_NOTES = "USER_NOTES"
+export const SET_COUNTS = "SET_COUNTS"
+export const LOGOUT = "LOGOUT"
    

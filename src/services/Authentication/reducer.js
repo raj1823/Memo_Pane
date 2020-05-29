@@ -1,12 +1,14 @@
 import {
     
     AUTHENTICATION_SUCCESS,
-   ADD_TOKEN
+   ADD_TOKEN,
+   SET_USERNAME
   } from './constant';
 
   const initialState = {
     success: false,
-    token : ''
+    token : '',
+    username: ''
     
   
    
@@ -15,14 +17,14 @@ import {
   };
 
   const authenticate_Reducer = (state = initialState, action) => {
-    console.log("action called",action)
+    console.log("authentication action called",action)
     switch (action.type) {
       
-      case AUTHENTICATION_SUCCESS:
+      case SET_USERNAME:
         return {
           ...state,
   
-          success: true,
+          username: action.username
   
         };
         case ADD_TOKEN : return { ...state, token : action.token}

@@ -13,8 +13,11 @@ import {
   WORK,
   IDEAS,
   LISTS,
-  USER_NOTES
+  USER_NOTES,
+  SET_COUNTS,
+  LOGOUT
 } from './constant';
+
 
 const initialState = {
   personalCount: 0,
@@ -23,6 +26,7 @@ const initialState = {
   listCount: 0,
   noteTitle: '',
   noteData: '',
+  
   selectedCategory : '',
   selectedCategoryNotesCount : null,
   userNotes:[],
@@ -33,6 +37,22 @@ const data_Reducer = (state = initialState, action) => {
 
   console.log("action called:",action.type)
   switch (action.type) {
+    case LOGOUT:return{
+          ...state, userNotes:[],
+          personalCount:0,
+          workCount:0,
+          ideasCount:0,
+          listCount:0
+
+    }
+
+    case SET_COUNTS : return{
+      ...state,
+      personalCount: state.personalCount+ action.count_data.pc,
+      workCount : state.workCount + action.count_data.wc,
+      ideasCount: state.ideasCount + action.count_data.ic,
+      listCount: state.listCount + action.count_data.lc
+    }
     case USER_NOTES: return{
 
       ...state, 
@@ -105,7 +125,7 @@ const data_Reducer = (state = initialState, action) => {
       return {
         ...state,
 
-        ideasCount : state.ideasCount - 1,
+        listCount : state.listCount - 1,
       };
     case SET_NOTE_DATA:
       return {
@@ -115,7 +135,7 @@ const data_Reducer = (state = initialState, action) => {
       };
       case CLEAR_NOTE_DATA:
         return{
-          ...state,
+         ...state,
           noteData : '',
           noteTitle: ''
         }

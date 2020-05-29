@@ -10,7 +10,13 @@ import {
   ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {viewOpenCategoryNotes,loadUserNotes} from '../services/Data/action'
+import AsyncStorage from '@react-native-community/async-storage';
+import {
+  viewOpenCategoryNotes,
+  loadUserNotes,
+  setCountsView,
+  loadUserNotesDescription,
+} from '../services/Data/action';
 
 class Home extends React.Component {
   constructor(props) {
@@ -18,30 +24,36 @@ class Home extends React.Component {
     this.state = {
       menuIcon: require('../../assets/hamburger.png'),
       addIcon: require('../../assets/add.png'),
-      selectedCategory:''
+      selectedCategory: '',
     };
   }
+
   componentDidMount() {
-    console.log("did mount called")
-    
+    console.log('did mount called');
+    this.props.loadUserNotes(this.props.token);
+    console.log('USR NOTES');
+
+    const {personalCount, ideasCount, workCount, listCount} = this.props;
+    console.log('counts ', personalCount, ideasCount, workCount, listCount);
+
+    try {
+      AsyncStorage.setItem('token', this.props.token);
+
+      AsyncStorage.setItem('username', this.props.username);
+    } catch {
+      console.log('Failed to save the data to the storage');
+    }
   }
 
-  static getDerivedStateFromProps(props,state){
-    console.log("get derived called-------------",props.token)
-    props.loadUserNotes(props.token)
-    return null
-  }
-
-  openNotes(){
-    this.props.navigation.navigate("viewNotes")
-    console.log("selected Category in home", this.state.selectedCategory)
-    this.props.viewOpenCategoryNotes(this.state.selectedCategory)
-
-
+  openNotes() {
+    this.props.loadUserNotesDescription(this.props.token);
+    this.props.navigation.navigate('viewNotes');
+    console.log('selected Category in home', this.state.selectedCategory);
+    this.props.viewOpenCategoryNotes(this.state.selectedCategory);
   }
 
   render() {
-    console.log("home props",this.props)
+    console.log('home props', this.props);
     return (
       <SafeAreaView style={style.container}>
         <View style={style.header}>
@@ -57,61 +69,63 @@ class Home extends React.Component {
 
         <View style={style.middleSection}>
           <View style={style.middleViewWrapper}>
-            <TouchableOpacity onPress={()=>{
-
-             this.setState({selectedCategory:"Personal"},()=>this.openNotes())
-              
-            }}>
-
-        
-            <View style={style.middleTextView}>
-              <Text style={style.notesTypeStyling}>Personal</Text>
-              <Text style={style.notesCountStyling}>
-                {this.props.personalCount}
-              </Text>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({selectedCategory: 'Personal'}, () =>
+                  this.openNotes(),
+                );
+              }}>
+              <View style={style.middleTextView}>
+                <Text style={style.notesTypeStyling}>Personal</Text>
+                <Text style={style.notesCountStyling}>
+                  {this.props.personalCount}
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
           <View style={style.middleViewWrapper}>
-            <TouchableOpacity onPress={()=>{
-
-this.setState({selectedCategory:"Work"},()=>this.openNotes())
- 
-}}>
-            <View style={style.middleTextView}>
-              <Text style={style.notesTypeStyling}>Work</Text>
-              <Text style={style.notesCountStyling}>
-                {this.props.workCount}
-              </Text>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({selectedCategory: 'Work'}, () =>
+                  this.openNotes(),
+                );
+              }}>
+              <View style={style.middleTextView}>
+                <Text style={style.notesTypeStyling}>Work</Text>
+                <Text style={style.notesCountStyling}>
+                  {this.props.workCount}
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
           <View style={style.middleViewWrapper}>
-          <TouchableOpacity onPress={()=>{
-
-this.setState({selectedCategory:"Ideas"},()=>this.openNotes())
- 
-}}>
-            <View style={style.middleTextView}>
-              <Text style={style.notesTypeStyling}>Ideas</Text>
-              <Text style={style.notesCountStyling}>
-                {this.props.ideasCount}
-              </Text>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({selectedCategory: 'Ideas'}, () =>
+                  this.openNotes(),
+                );
+              }}>
+              <View style={style.middleTextView}>
+                <Text style={style.notesTypeStyling}>Ideas</Text>
+                <Text style={style.notesCountStyling}>
+                  {this.props.ideasCount}
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
           <View style={style.middleViewWrapper}>
-          <TouchableOpacity onPress={()=>{
-
-this.setState({selectedCategory:"Lists"},()=>this.openNotes())
- 
-}}>
-            <View style={style.middleTextView}>
-              <Text style={style.notesTypeStyling}>Lists</Text>
-              <Text style={style.notesCountStyling}>
-                {this.props.listCount}
-              </Text>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({selectedCategory: 'Lists'}, () =>
+                  this.openNotes(),
+                );
+              }}>
+              <View style={style.middleTextView}>
+                <Text style={style.notesTypeStyling}>Lists</Text>
+                <Text style={style.notesCountStyling}>
+                  {this.props.listCount}
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -123,9 +137,10 @@ this.setState({selectedCategory:"Lists"},()=>this.openNotes())
                 style={{
                   width: '40%',
                 }}>
-                <TouchableOpacity onPress={()=>{
-              this.props.navigation.openDrawer()
-            }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.openDrawer();
+                  }}>
                   <Image
                     source={this.state.menuIcon}
                     style={style.menuIconStyling}
@@ -136,10 +151,10 @@ this.setState({selectedCategory:"Lists"},()=>this.openNotes())
 
             <View style={style.addNoteView}>
               <View style={style.addButtonWrapper}>
-                <TouchableOpacity onPress={()=>{
-
-                  this.props.navigation.navigate("My Note")
-                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('My Note');
+                  }}>
                   <Image
                     source={this.state.addIcon}
                     style={style.addIconStyling}
@@ -215,7 +230,7 @@ const style = StyleSheet.create({
   },
   middleTextView: {
     marginVertical: 15,
-   
+
     flexDirection: 'row',
     marginHorizontal: 20,
   },
@@ -250,16 +265,19 @@ const style = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  userNotes: state.data_Reducer.userNotes,
   personalCount: state.data_Reducer.personalCount,
   workCount: state.data_Reducer.workCount,
   ideasCount: state.data_Reducer.ideasCount,
   listCount: state.data_Reducer.listCount,
-
-  token: state.authenticate_Reducer.token
+  username: state.authenticate_Reducer.username,
+  token: state.authenticate_Reducer.token,
 });
 const mapDispatchToProps = {
-  viewOpenCategoryNotes : viewOpenCategoryNotes,
-  loadUserNotes : loadUserNotes
+  viewOpenCategoryNotes: viewOpenCategoryNotes,
+  loadUserNotes: loadUserNotes,
+  loadUserNotesDescription: loadUserNotesDescription,
+  setCountsView: setCountsView,
 };
 
 export default connect(

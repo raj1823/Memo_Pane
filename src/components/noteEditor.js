@@ -19,8 +19,8 @@ class NoteEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      title : props.noteTitle,
-      noteData : props.noteData,
+       title : props.noteTitle,
+       noteData : props.noteData,
       visible: false,
       date: '',
       selectedCategory: 'Personal',
@@ -45,13 +45,16 @@ class NoteEditor extends React.Component {
     this.props.clearNoteData()
   }
   addNote(title,data){
+
+    let updatedData= this.state.selectedCategory+"$$$"+data
         console.log("token token token",title,data)
         if(title && data ) {
-          let updatedData= this.state.selectedCategory+"$$$"+data
+          
           this.props.addMyNote(title,updatedData,this.props.token)
         }
         else if(!title && data){
-          this.props.addMyNote(" ",data,this.props.token)
+         
+          this.props.addMyNote(" ",updatedData,this.props.token)
         }
     
   }
@@ -129,7 +132,7 @@ class NoteEditor extends React.Component {
                     this.props.navigation.goBack();
                     this.updateDashboard(this.state.selectedCategory);
                     this.addNote(this.state.title,this.state.noteData)
-                    this.props.clearNoteData()
+                    this.clearNoteData()
                    
                   }}>
                   <Image

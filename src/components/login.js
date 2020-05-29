@@ -7,20 +7,25 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-
+import {LoginButton, AccessToken, LoginManager} from 'react-native-fbsdk';
 import {connect} from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
+import {loadUserNotes, setCountsView} from '../services/Data/action';
 import {TextInput} from 'react-native';
 import ActivityWaiter from '../components/activityWaiter';
-import {authenticate_User} from '../services/Authentication/action';
+import {
+  authenticate_User,
+  setUserToken,
+  setUserName,
+} from '../services/Authentication/action';
 
 class Login extends React.Component {
   constructor(props) {
-    //console.log("props in const",props)
-    super(props)
+    super(props);
     this.state = {
       hidePassword: true,
-      username: 'Raj1823',
-      password: '11111111',
+      username: 'raj123',
+      password: 'raj@123',
       isLoading: false,
       imagePath: require('../../assets/addUser.png'),
       viewPasswordImage: require('../../assets/viewPassword.png'),
@@ -30,40 +35,87 @@ class Login extends React.Component {
       twitterIcon: require('../../assets/twitter.png'),
       githubIcon: require('../../assets/github.png'),
       viewHidePasswordImage: require('../../assets/hidePassword.png'),
+      socialId: '',
     };
   }
-  componentDidMount() {}
+  isUserLoggedIn = () => {
+    console.log('Props before rendering: ', this.props);
+    AsyncStorage.getItem('username').then(value => {
+      console.log('username in ASYNC', value);
+      this.props.setUserName(value);
+    });
+    AsyncStorage.getItem('token').then(value => {
+      console.log('token isUserLOggedIn is', value);
+
+      if (value != null) {
+        this.props.setToken(value);
+
+        this.props.props.navigation.navigate('MyDrawer');
+        alert('Welcome Back User!');
+      } else {
+      }
+    });
+  };
+  componentDidMount() {
+    this.isUserLoggedIn();
+  }
   loginUser(username, password) {
     this.props.authenticate_User(username, password).then(
       resolve => {
         if (resolve == 200) {
-           
-          this.setState({ isLoading : false})
-          this.props.props.navigation.navigate("MyDrawer")
+          this.setState({isLoading: false});
+
+          this.props.props.navigation.navigate('MyDrawer');
         }
       },
       reject => {
         if (reject == 'ERROR') alert('Wrong Credentials');
         else alert('Cannot process your request. Please try again later!');
-          this.setState({ isLoading : false});
+        this.setState({isLoading: false});
       },
     );
   }
-  
+  facebookLogin() {
+    LoginManager.logInWithPermissions([
+      'public_profile',
+      'email',
+      'user_friends',
+    ])
+      .then(function(result) {
+        if (result.isCancelled) {
+          console.log('Login cancelled');
+        } else {
+          console.log(
+            'Login success with permissions: ' + result.grantedPermissions,
+            //console.log("hehe",result.grantedPermissions['email'])
+          );
+          AccessToken.getCurrentAccessToken().then(data => {
+            var token = data.accessToken.toString();
+            console.log('facebook initialLogin');
+            console.log(token);
+            // this.setState({socialId:token})
+          });
+        }
+      })
+      .catch(error => {
+        console.log('Login fail with error: ' + error);
+      });
+  }
+
+  initUSer() {
+    console.log('Init user called');
+  }
 
   render() {
     const {username, password, isLoading} = this.state;
-    console.log("props",this.props)
+    console.log('props', this.props);
 
     return (
       <SafeAreaView style={style.container}>
-        { isLoading ? (
+        {isLoading ? (
           <ActivityWaiter />
         ) : (
           <View style={{flex: 1}}>
-           
-           
-
             <View style={style.middleSection}>
               <View style={style.middleSectionStyling}>
                 <View style={style.addUserViewStyling}>
@@ -75,7 +127,7 @@ class Login extends React.Component {
                 <View style={style.userNameView}>
                   <TextInput
                     placeholder={'Username or email address'}
-                    defaultValue={'Raj1823'}
+                    defaultValue={'raj1234'}
                     onChangeText={text => {
                       this.setState({username: text});
                     }}
@@ -92,7 +144,7 @@ class Login extends React.Component {
                 <View style={style.passwordView}>
                   <TextInput
                     placeholder={'Password'}
-                    defaultValue={'11111111'}
+                    defaultValue={'raj@1234'}
                     onChangeText={text => {
                       this.setState({password: text});
                     }}
@@ -148,7 +200,7 @@ class Login extends React.Component {
                             alignSelf: 'center',
                             color: 'blue',
                             paddingVertical: 13,
-                            fontWeight:"600"
+                            fontWeight: '600',
                           }}>
                           LOG IN
                         </Text>
@@ -180,7 +232,13 @@ class Login extends React.Component {
                     style={style.socialIconStyling}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.facebookLogin(),
+                      setTimeout(() => {
+                        this.initUSer();
+                      }, 10000);
+                  }}>
                   <Image
                     source={this.state.facebookIcon}
                     style={style.socialIconStyling}
@@ -270,9 +328,7 @@ const style = StyleSheet.create({
   },
   upperHeading: {
     flex: 2,
-    justifyContent:"center"
-
-   
+    justifyContent: 'center',
   },
   middleSection: {
     flex: 6,
@@ -299,9 +355,16 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  token: state.authenticate_Reducer.token,
+  userNotes: state.data_Reducer.userNotes,
+});
 const mapDispatchToProps = {
   authenticate_User: authenticate_User,
+  setToken: setUserToken,
+  loadUserNotes: loadUserNotes,
+  setCountsView: setCountsView,
+  setUserName: setUserName,
 };
 
 export default connect(
