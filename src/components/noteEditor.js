@@ -13,14 +13,19 @@ import {
 import {connect} from 'react-redux';
 
 import {TextInput} from 'react-native-gesture-handler';
-import {updateHome,setNoteData,clearNoteData,addMyNote} from '../services/Data/action';
+import {
+  updateHome,
+  setNoteData,
+  clearNoteData,
+  addMyNote,
+} from '../services/Data/action';
 
 class NoteEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-       title : props.noteTitle,
-       noteData : props.noteData,
+      title: props.noteTitle,
+      noteData: props.noteData,
       visible: false,
       date: '',
       selectedCategory: 'Personal',
@@ -34,37 +39,27 @@ class NoteEditor extends React.Component {
     };
   }
 
-  setNoteData(title,data){
-
-    this.props.setNoteData(title,data)
-
-
-
+  setNoteData(title, data) {
+    this.props.setNoteData(title, data);
   }
-  clearNoteData(){
-    this.props.clearNoteData()
+  clearNoteData() {
+    this.props.clearNoteData();
   }
-  addNote(title,data){
-    
-    let updatedData= this.state.selectedCategory+"$$$"+data
-        console.log("token token token",title,data)
-        if(title && data ) {
-          
-          this.props.addMyNote(title,updatedData,this.props.token)
-        }
-        else if(!title && data){
-         
-          this.props.addMyNote(" ",updatedData,this.props.token)
-        }
-    
+  addNote(title, data) {
+    let updatedData = this.state.selectedCategory + '$$$' + data;
+    console.log('token token token', title, data);
+    if (title && data) {
+      this.props.addMyNote(title, updatedData, this.props.token);
+    } else if (!title && data) {
+      this.props.addMyNote(' ', updatedData, this.props.token);
+    }
   }
 
   updateDashboard(category) {
-    const {title,noteData}=this.state
-    if(title && noteData)
-    this.props.updateHome(category)
-    else if(!title && noteData){
-      this.props.updateHome(category)
+    const {title, noteData} = this.state;
+    if (title && noteData) this.props.updateHome(category);
+    else if (!title && noteData) {
+      this.props.updateHome(category);
     }
   }
 
@@ -75,17 +70,16 @@ class NoteEditor extends React.Component {
     var year = new Date().getFullYear(); //Current Year
     var hours = new Date().getHours(); //Current Hours
     var min = new Date().getMinutes(); //Current Minutes
-    
+
     that.setState({
-      date:
-        date + '/' + month + '/' + year + ' ' + hours + ':' + min 
+      date: date + '/' + month + '/' + year + ' ' + hours + ':' + min,
     });
   }
 
   render() {
-    console.log("notes prop",this.props)
-    console.log( "user token",this.props.token)
-    console.log("notes states",this.state)
+    console.log('notes prop', this.props);
+    console.log('user token', this.props.token);
+    console.log('notes states', this.state);
     return (
       <SafeAreaView style={{flex: 1}}>
         {this.state.visible ? (
@@ -131,9 +125,8 @@ class NoteEditor extends React.Component {
                   onPress={() => {
                     this.props.navigation.goBack();
                     this.updateDashboard(this.state.selectedCategory);
-                    this.addNote(this.state.title,this.state.noteData)
-                    this.clearNoteData()
-                   
+                    this.addNote(this.state.title, this.state.noteData);
+                    this.clearNoteData();
                   }}>
                   <Image
                     source={this.state.leftArrow}
@@ -195,9 +188,11 @@ class NoteEditor extends React.Component {
                     <View style={{justifyContent: 'center'}}>
                       <TouchableOpacity
                         onPress={() => {
-                          this.setNoteData(this.state.title,this.state.noteData)
+                          this.setNoteData(
+                            this.state.title,
+                            this.state.noteData,
+                          );
                           this.setState({visible: true});
-                          
                         }}>
                         <Image
                           source={require('../../assets/downArrow.png')}
@@ -218,19 +213,27 @@ class NoteEditor extends React.Component {
                   borderWidth: 1,
                   borderColor: 'black',
                 }}>
-                   <TextInput
+                <TextInput
                   placeholder={'Title'}
                   defaultValue={this.props.noteTitle}
                   multiline={true}
-                  onChangeText={(text)=>{this.setState({title:text})}}
-                  style={{marginHorizontal: 15, fontSize: 22, marginBottom:10,
-                            fontWeight:"600"}}
+                  onChangeText={text => {
+                    this.setState({title: text});
+                  }}
+                  style={{
+                    marginHorizontal: 15,
+                    fontSize: 22,
+                    marginBottom: 10,
+                    fontWeight: '600',
+                  }}
                 />
                 <TextInput
                   placeholder={'Add Notes'}
                   defaultValue={this.props.noteData}
                   multiline={true}
-                  onChangeText={(text)=>{this.setState({noteData:text})}}
+                  onChangeText={text => {
+                    this.setState({noteData: text});
+                  }}
                   style={{marginHorizontal: 15, fontSize: 18, marginBottom: 20}}
                 />
               </View>
@@ -271,14 +274,13 @@ const style = StyleSheet.create({
 const mapStateToProps = state => ({
   token: state.authenticate_Reducer.token,
   noteData: state.data_Reducer.noteData,
-  noteTitle: state.data_Reducer.noteTitle
- 
+  noteTitle: state.data_Reducer.noteTitle,
 });
 const mapDispatchToProps = {
   updateHome: updateHome,
   setNoteData: setNoteData,
   clearNoteData: clearNoteData,
-  addMyNote : addMyNote
+  addMyNote: addMyNote,
 };
 
 export default connect(

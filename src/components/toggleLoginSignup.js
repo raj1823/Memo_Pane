@@ -71,7 +71,9 @@ export function ToggleSignIn_SignUp(props) {
         </View>
       </View>
 
-      <View style={{flex: 8}}>{toggle ? <Login props={props} /> : <SignUp props={props} />}</View>
+      <View style={{flex: 8}}>
+        {toggle ? <Login props={props} /> : <SignUp props={props} />}
+      </View>
     </View>
   );
 }

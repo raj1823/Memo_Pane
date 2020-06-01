@@ -11,7 +11,12 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import CardView from 'react-native-cardview';
-import {deleteNote, loadUserNotesDescription, setNoteData,updateHome} from '../services/Data/action';
+import {
+  deleteNote,
+  loadUserNotesDescription,
+  setNoteData,
+  updateHome,
+} from '../services/Data/action';
 
 class ViewNotes extends React.Component {
   constructor(props) {
@@ -21,9 +26,8 @@ class ViewNotes extends React.Component {
     };
   }
 
-  updateDashboard(){
-   
-    this.props.updateHome("delete"+this.props.noteTitle)
+  updateDashboard() {
+    this.props.updateHome('delete' + this.props.noteTitle);
   }
 
   deleteNote(noteId) {
@@ -47,11 +51,9 @@ class ViewNotes extends React.Component {
   render() {
     const {noteTitle, noteCount} = this.props;
     console.log('notes:', this.props.userNotes);
-    var notes= this.props.userNotes.filter((item)=>{
-
-        if(item.data.split("$$$")[0]===noteTitle)
-        return item
-    })
+    var notes = this.props.userNotes.filter(item => {
+      if (item.data.split('$$$')[0] === noteTitle) return item;
+    });
 
     return (
       <SafeAreaView style={style.container}>
@@ -90,7 +92,7 @@ class ViewNotes extends React.Component {
                         <TouchableOpacity
                           onPress={() => {
                             this.deleteNote(item.id);
-                            this.updateDashboard()
+                            this.updateDashboard();
                           }}>
                           <Image
                             source={this.state.deleteIcon}
@@ -110,7 +112,7 @@ class ViewNotes extends React.Component {
                       <View
                         style={{
                           flex: 2,
-                         // backgroundColor: 'orange',
+                          // backgroundColor: 'orange',
                           justifyContent: 'center',
                         }}>
                         <Text
@@ -120,21 +122,21 @@ class ViewNotes extends React.Component {
                             marginVertical: 7,
                             color: '#444987',
                           }}>
-                          {item.data.split("$$$")[1]}
+                          {item.data.split('$$$')[1]}
                         </Text>
                       </View>
 
                       <View
                         style={{
                           flex: 1,
-                         // backgroundColor: 'cyan',
+                          // backgroundColor: 'cyan',
                           justifyContent: 'center',
                         }}>
-                        <TouchableOpacity onPress={() => {
-
-                            this.props.setNoteData(item.title,item.data)
-                            this.props.navigation.navigate("My Note")
-                        }}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.props.setNoteData(item.title, item.data);
+                            this.props.navigation.navigate('My Note');
+                          }}>
                           <Text
                             style={{
                               color: '#e62c2c',
@@ -222,7 +224,7 @@ const mapDispatchToProps = {
   deleteNote: deleteNote,
   loadUserNotesDescription: loadUserNotesDescription,
   setNoteData: setNoteData,
-  updateHome : updateHome
+  updateHome: updateHome,
 };
 
 export default connect(

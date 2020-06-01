@@ -137,7 +137,7 @@ class SignUp extends React.Component {
                   }>
                   <TextInput
                     placeholder={'Username'}
-                    autoCapitalize={"none"}
+                    autoCapitalize={'none'}
                     placeholderTextColor={'#cdd0d4'}
                     onChangeText={text => {
                       this.validateField(text, 'username');
@@ -152,7 +152,7 @@ class SignUp extends React.Component {
                   }>
                   <TextInput
                     placeholder={'Password'}
-                    autoCapitalize={"none"}
+                    autoCapitalize={'none'}
                     placeholderTextColor={'#cdd0d4'}
                     onChangeText={text => {
                       this.validateField(text, 'password');
@@ -186,7 +186,7 @@ class SignUp extends React.Component {
                   <TextInput
                     placeholder={'Repeat Password'}
                     placeholderTextColor={'#cdd0d4'}
-                    autoCapitalize={"none"}
+                    autoCapitalize={'none'}
                     onChangeText={text => {
                       this.setState({repeatPassword: text});
                     }}
