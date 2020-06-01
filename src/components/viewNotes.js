@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import CardView from 'react-native-cardview';
-import {deleteNote, loadUserNotes, setNoteData,updateHome} from '../services/Data/action';
+import {deleteNote, loadUserNotesDescription, setNoteData,updateHome} from '../services/Data/action';
 
 class ViewNotes extends React.Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class ViewNotes extends React.Component {
     this.props.deleteNote(this.props.token, noteId).then(
       resolve => {
         if (resolve == 200) {
-          this.props.loadUserNotes(this.props.token);
+          this.props.loadUserNotesDescription(this.props.token);
         }
       },
 
@@ -220,7 +220,7 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = {
   deleteNote: deleteNote,
-  loadUserNotes: loadUserNotes,
+  loadUserNotesDescription: loadUserNotesDescription,
   setNoteData: setNoteData,
   updateHome : updateHome
 };

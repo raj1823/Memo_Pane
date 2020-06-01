@@ -2,13 +2,15 @@ import {
     
     AUTHENTICATION_SUCCESS,
    ADD_TOKEN,
-   SET_USERNAME
+   SET_USERNAME,
+   SET_SOCIAL_ID
   } from './constant';
 
   const initialState = {
     success: false,
     token : '',
-    username: ''
+    username: '',
+    socialId: ''
     
   
    
@@ -27,6 +29,11 @@ import {
           username: action.username
   
         };
+        case SET_SOCIAL_ID:
+          return{
+            ...state,
+            socialId: action.token
+          }
         case ADD_TOKEN : return { ...state, token : action.token}
       
         default:

@@ -2,10 +2,10 @@ export const colorConstants = {
     fontColour: '#000',
     otherTextColor: '#7d7d7d',
     loginColour: '#0606c9',
-    backgroundColourLight: '#fff',
+    backgroundColourLight: '#e1e2e3',
     backgroundColourDark: '#000',
-    fontColourLight: '#000',
-    fontColourDark: '#fff',
+    fontColourLight: '#fff',
+    fontColourDark: '#000',
   };
   
   export const imageConstants = {
@@ -26,4 +26,5 @@ export const colorConstants = {
     // menuDark: require('../Assets/DarkMode/menu.png'),
     // menuLight: require('../Assets/lightMode/menu.png'),
     // add: require('../Assets/add.png'),
+     userImage: require("../../assets/user.png")
   };

@@ -37,6 +37,8 @@ class Home extends React.Component {
     console.log('counts ', personalCount, ideasCount, workCount, listCount);
 
     try {
+
+      console.log("token and username before setting",this.props.token,this.props.username)
       AsyncStorage.setItem('token', this.props.token);
 
       AsyncStorage.setItem('username', this.props.username);

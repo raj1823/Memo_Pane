@@ -25,7 +25,7 @@ class ActivityWaiter extends React.Component {
       <Modal transparent={true} animationType={'fade'} visible={true}>
         <View style={style.modalBackground}>
           <View style={style.activityIndicatorWrapper}>
-            <BallIndicator color="#e4264e" size={50} />
+            <PacmanIndicator color="#e4264e" size={50} />
           </View>
         </View>
       </Modal>

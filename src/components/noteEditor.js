@@ -45,7 +45,7 @@ class NoteEditor extends React.Component {
     this.props.clearNoteData()
   }
   addNote(title,data){
-
+    
     let updatedData= this.state.selectedCategory+"$$$"+data
         console.log("token token token",title,data)
         if(title && data ) {

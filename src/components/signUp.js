@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 
 import {connect} from 'react-redux';
@@ -19,24 +20,45 @@ class SignUp extends React.Component {
     this.state = {
       hidePassword: true,
       hideRepeatPassword: true,
-      username: 'raj1234',
-      password: 'raj@1234',
-      name:'Raj',
-      phoneNumber:'9399239243',
-      repeatPassword:'raj@1234',
+      username: '',
+      validatedUsername: true,
+      password: '',
+      validatedPassword: true,
+      name: '',
+      phoneNumber: '',
+      repeatPassword: '',
       isLoading: false,
       selfie: require('../../assets/selfie.png'),
       viewPasswordImage: require('../../assets/viewPassword.png'),
       viewHidePasswordImage: require('../../assets/hidePassword.png'),
-      
     };
   }
   componentDidMount() {}
-  createUser() {
-    const {username,password,name,phoneNumber,repeatPassword}=this.state
+  validateField(text, dataType) {
+    var userNameRegex = /^\S{4,}$/;
+    var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-    if(password===repeatPassword){
-      this.props.register_User(username, password,name,phoneNumber).then(
+    if (dataType === 'username') {
+      if (userNameRegex.test(text)) {
+        this.setState({validatedUsername: true});
+        this.setState({username: text});
+      } else {
+        this.setState({validatedUsername: false});
+      }
+    } else if (dataType === 'password') {
+      if (passwordRegex.test(text)) {
+        this.setState({validatedPassword: true});
+        this.setState({password: text});
+      } else {
+        this.setState({validatedPassword: false});
+      }
+    }
+  }
+  createUser() {
+    const {username, password, name, phoneNumber, repeatPassword} = this.state;
+
+    if (password === repeatPassword) {
+      this.props.register_User(username, password, name, phoneNumber).then(
         resolve => {
           if (resolve == 200) {
             alert('Registration Successfull');
@@ -45,24 +67,29 @@ class SignUp extends React.Component {
           }
         },
         reject => {
-          if (reject == 'ERROR') alert('Wrong Credentials');
-          else alert('Cannot process your request. Please try again later!');
-          this.setState({isLoading: false});
+          if (reject == 'ERROR') {
+            Alert.alert('Unsufficient Data', '', [
+              {text: 'OK', onPress: () => this.setState({isLoading: false})},
+            ]);
+          } else {
+            Alert.alert(
+              'Cannot process your request. Please try again later!',
+              '',
+              [{text: 'OK', onPress: () => this.setState({isLoading: false})}],
+            );
+          }
         },
       );
-
-    }
-    else{
-      alert("Passwords do not match!")
+    } else {
+      alert('Passwords do not match!');
       this.setState({isLoading: false});
     }
-  
   }
 
   render() {
-    const { isLoading} = this.state;
-    console.log("props in sign Up",this.props)
-    console.log("isLoading",isLoading)
+    const {isLoading, validatedPassword, validatedUsername} = this.state;
+    console.log('props in sign Up', this.props);
+    console.log('isLoading', isLoading);
 
     return (
       <SafeAreaView style={style.container}>
@@ -70,8 +97,6 @@ class SignUp extends React.Component {
           <ActivityWaiter />
         ) : (
           <View style={{flex: 1}}>
-           
-
             <View style={style.middleSection}>
               <View style={style.middleSectionStyling}>
                 <View style={style.addUserViewStyling}>
@@ -83,6 +108,7 @@ class SignUp extends React.Component {
                 <View style={style.usernameView}>
                   <TextInput
                     placeholder={'Enter name'}
+                    placeholderTextColor={'#cdd0d4'}
                     onChangeText={text => {
                       this.setState({name: text});
                     }}
@@ -92,34 +118,44 @@ class SignUp extends React.Component {
                       paddingTop: 1,
                       flex: 8,
                       paddingLeft: 3,
-                     
                     }}
                   />
                 </View>
                 <View style={style.usernameView}>
                   <TextInput
                     placeholder={'Enter Phone Number'}
+                    placeholderTextColor={'#cdd0d4'}
                     onChangeText={text => {
                       this.setState({phoneNumber: text});
                     }}
                     style={style.inputStyling}
                   />
                 </View>
-                <View style={style.usernameView}>
+                <View
+                  style={
+                    validatedUsername ? style.usernameView : style.ErrorView
+                  }>
                   <TextInput
                     placeholder={'Username'}
+                    autoCapitalize={"none"}
+                    placeholderTextColor={'#cdd0d4'}
                     onChangeText={text => {
-                      this.setState({username: text});
+                      this.validateField(text, 'username');
                     }}
                     style={style.inputStyling}
                   />
                 </View>
 
-                <View style={style.passwordView}>
+                <View
+                  style={
+                    validatedPassword ? style.passwordView : style.ErrorView
+                  }>
                   <TextInput
                     placeholder={'Password'}
+                    autoCapitalize={"none"}
+                    placeholderTextColor={'#cdd0d4'}
                     onChangeText={text => {
-                      this.setState({password: text});
+                      this.validateField(text, 'password');
                     }}
                     style={style.inputStyling}
                     secureTextEntry={this.state.hidePassword}
@@ -141,9 +177,16 @@ class SignUp extends React.Component {
                   </View>
                 </View>
 
-                <View style={style.passwordView}>
+                <View
+                  style={
+                    this.state.password === this.state.repeatPassword
+                      ? style.passwordView
+                      : style.ErrorView
+                  }>
                   <TextInput
                     placeholder={'Repeat Password'}
+                    placeholderTextColor={'#cdd0d4'}
+                    autoCapitalize={"none"}
                     onChangeText={text => {
                       this.setState({repeatPassword: text});
                     }}
@@ -153,7 +196,9 @@ class SignUp extends React.Component {
                   <View style={{flex: 2, justifyContent: 'flex-end'}}>
                     <TouchableOpacity
                       onPress={() => {
-                        this.setState({hideRepeatPassword: !this.state.hideRepeatPassword});
+                        this.setState({
+                          hideRepeatPassword: !this.state.hideRepeatPassword,
+                        });
                       }}>
                       <Image
                         source={
@@ -173,14 +218,12 @@ class SignUp extends React.Component {
                 <View style={style.signInButtonView}>
                   <TouchableOpacity
                     onPress={() => {
-                      
-                      this.setState({isLoading: true},()=>{this.createUser()});
+                      this.setState({isLoading: true}, () => {
+                        this.createUser();
+                      });
                     }}>
                     <View style={style.signInButton}>
-                      <Text
-                        style={style.SignUpButtonTextStyling}>
-                        SIGN UP
-                      </Text>
+                      <Text style={style.SignUpButtonTextStyling}>SIGN UP</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -203,7 +246,7 @@ const style = StyleSheet.create({
     width: 70,
     resizeMode: 'contain',
   },
-  SignUpButtonTextStyling:{
+  SignUpButtonTextStyling: {
     fontSize: 24,
     alignSelf: 'center',
     color: 'blue',
@@ -225,12 +268,28 @@ const style = StyleSheet.create({
   signInButtonView: {
     marginVertical: 22,
   },
-  inputStyling:{
+  inputStyling: {
     fontSize: 22,
     paddingBottom: 10,
     paddingTop: 15,
     flex: 8,
     paddingLeft: 3,
+  },
+  usernameView: {
+    marginTop: 8,
+
+    flexDirection: 'row',
+
+    borderBottomColor: '#e3e2de',
+    borderBottomWidth: 1,
+  },
+  ErrorView: {
+    marginTop: 8,
+
+    flexDirection: 'row',
+
+    borderColor: 'red',
+    borderBottomWidth: 2,
   },
   signInButton: {
     borderRadius: 30,
@@ -257,15 +316,6 @@ const style = StyleSheet.create({
     marginBottom: 7,
   },
 
- 
-  usernameView:{
-    marginTop: 8,
-
-    flexDirection: 'row',
-
-    borderBottomColor: '#e3e2de',
-    borderBottomWidth: 1,
-  },
   passwordView: {
     marginTop: 8,
 
@@ -273,7 +323,6 @@ const style = StyleSheet.create({
 
     borderBottomColor: '#e3e2de',
     borderBottomWidth: 1,
-    
   },
   addUserViewStyling: {
     marginBottom: 20,
@@ -294,8 +343,6 @@ const style = StyleSheet.create({
   middleSection: {
     flex: 6,
     marginHorizontal: 22,
-   
-    
   },
   footer: {
     flex: 3,
@@ -320,8 +367,7 @@ const style = StyleSheet.create({
 
 const mapStateToProps = state => ({});
 const mapDispatchToProps = {
-  
-  register_User: register_User
+  register_User: register_User,
 };
 
 export default connect(

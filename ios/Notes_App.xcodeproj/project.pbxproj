@@ -16,6 +16,7 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* Notes_AppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* Notes_AppTests.m */; };
+		353123E02483B95300830A3F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 353123DF2483B95300830A3F /* GoogleService-Info.plist */; };
 		8CAC390068FBD0C79007E3B5 /* libPods-Notes_App-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2CF4CB8D3C6D19574E59118 /* libPods-Notes_App-tvOSTests.a */; };
 		948714EF924E28E1D7A3DE29 /* libPods-Notes_App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269700F22ACC1E12B45A4280 /* libPods-Notes_App.a */; };
 		C090E33A6C1D55722DF73ABB /* libPods-Notes_App-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ABCBC09C244AA0711FF1F3B /* libPods-Notes_App-tvOS.a */; };
@@ -56,6 +57,7 @@
 		269700F22ACC1E12B45A4280 /* libPods-Notes_App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Notes_App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E47B1E0B4A5D006451C7 /* Notes_App-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Notes_App-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Notes_App-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Notes_App-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		353123DF2483B95300830A3F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Notes_App/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3ABCBC09C244AA0711FF1F3B /* libPods-Notes_App-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Notes_App-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		801CBF6B7E5C79C30001C257 /* Pods-Notes_App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Notes_App.debug.xcconfig"; path = "Target Support Files/Pods-Notes_App/Pods-Notes_App.debug.xcconfig"; sourceTree = "<group>"; };
 		BA80262688E8641E3A8242C4 /* Pods-Notes_App-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Notes_App-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Notes_App-tvOSTests/Pods-Notes_App-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 			children = (
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				353123DF2483B95300830A3F /* GoogleService-Info.plist */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -194,7 +197,6 @@
 				D28BCA6B61BEF556994F4804 /* Pods-Notes_App-tvOSTests.debug.xcconfig */,
 				BA80262688E8641E3A8242C4 /* Pods-Notes_App-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -342,6 +344,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				353123E02483B95300830A3F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,7 +378,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		0AB24F647EAB5104337D638A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -407,6 +410,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Notes_App-Notes_AppTests/Pods-Notes_App-Notes_AppTests-resources.sh",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -427,6 +431,7 @@
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
@@ -471,6 +476,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Notes_App/Pods-Notes_App-resources.sh",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -491,6 +497,7 @@
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
@@ -748,6 +755,7 @@
 				PRODUCT_NAME = Notes_App;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -769,6 +777,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Notes_App;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

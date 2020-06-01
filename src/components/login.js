@@ -6,8 +6,9 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  Alert
+  Alert,
 } from 'react-native';
+import {GraphRequest, GraphRequestManager} from 'react-native-fbsdk';
 import {LoginButton, AccessToken, LoginManager} from 'react-native-fbsdk';
 import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -16,17 +17,22 @@ import {TextInput} from 'react-native';
 import ActivityWaiter from '../components/activityWaiter';
 import {
   authenticate_User,
+  setSocialId,
   setUserToken,
   setUserName,
+  register_SocialUser,
 } from '../services/Authentication/action';
+import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
+import {concat} from 'react-native-reanimated';
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      userInfo: {},
       hidePassword: true,
-      username: 'raj1234',
-      password: 'raj@1234',
+      username: 'raj123',
+      password: 'raj@123',
       isLoading: false,
       imagePath: require('../../assets/addUser.png'),
       viewPasswordImage: require('../../assets/viewPassword.png'),
@@ -41,25 +47,112 @@ class Login extends React.Component {
   }
   isUserLoggedIn = () => {
     console.log('Props before rendering: ', this.props);
-    AsyncStorage.getItem('username').then(value => {
-      console.log('username in ASYNC', value);
-      this.props.setUserName(value);
-    });
+
     AsyncStorage.getItem('token').then(value => {
       console.log('token isUserLOggedIn is', value);
 
       if (value != null) {
         this.props.setToken(value);
-
+        AsyncStorage.getItem('username').then(value => {
+          console.log('username in ASYNC', value);
+          this.props.setUserName(value);
+        });
         this.props.props.navigation.navigate('MyDrawer');
         alert('Welcome Back User!');
       } else {
       }
     });
   };
+  isSignedIn = async () => {
+    const isSignedIn = await GoogleSignin.isSignedIn();
+    console.log('8888888888');
+    if (isSignedIn) {
+      console.log('user already signed in');
+      AsyncStorage.getItem('token').then(value => {
+        console.log('token isUserLOggedIn is', value);
+
+        if (value != null) {
+          this.props.setToken(value);
+
+          this.props.props.navigation.navigate('MyDrawer');
+        } else {
+        }
+      });
+    }
+  };
   componentDidMount() {
     this.isUserLoggedIn();
+    GoogleSignin.configure();
+    this.isSignedIn();
   }
+  googleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      this.setState({userInfo});
+      let name = this.state.userInfo.user.name;
+      let token = this.state.userInfo.user.id;
+      let username = this.state.userInfo.user.email;
+
+      console.log('social id', token);
+      console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', name, username);
+
+      this.props.register_SocialUser(username, ' ', name, '0', token).then(
+        resolve => {
+          if (resolve == 200) {
+            this.props.props.navigation.navigate('MyDrawer');
+          }
+        },
+        reject => {
+          if (reject == 'API_ERROR')
+            alert('Cannot process your request. Please try again later!');
+          else if (reject == 'USERNAME_ERROR') {
+            this.setState({isLoading: true});
+            this.props.authenticate_User(username, ' ').then(
+              resolve => {
+                if (resolve == 200) {
+                  this.setState({isLoading: false});
+
+                  this.props.props.navigation.navigate('MyDrawer');
+                }
+              },
+              reject => {
+                if (reject == 'ERROR') {
+                  Alert.alert('Wrong Credentials', '', [
+                    {
+                      text: 'OK',
+                      onPress: () => this.setState({isLoading: false}),
+                    },
+                  ]);
+                } else {
+                  Alert.alert(
+                    'Cannot process your request. Please try again later!',
+                    '',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => this.setState({isLoading: false}),
+                      },
+                    ],
+                  );
+                }
+              },
+            );
+          }
+        },
+      );
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        //alert("operation cancelled")
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        <ActivityWaiter />;
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+  };
   loginUser(username, password) {
     this.props.authenticate_User(username, password).then(
       resolve => {
@@ -70,25 +163,34 @@ class Login extends React.Component {
         }
       },
       reject => {
-        if (reject == 'ERROR') 
-        {
-          Alert.alert('Wrong Credentials',"",
-          [ 
-            { text: 'OK',
-              onPress: () => this.setState({isLoading:false})
-            },
-          ]
-
-              );
-         
-          
+        if (reject == 'ERROR') {
+          Alert.alert('Wrong Credentials', '', [
+            {text: 'OK', onPress: () => this.setState({isLoading: false})},
+          ]);
+        } else {
+          Alert.alert(
+            'Cannot process your request. Please try again later!',
+            '',
+            [{text: 'OK', onPress: () => this.setState({isLoading: false})}],
+          );
         }
-       else {
-        Alert.alert('Cannot process your request. Please try again later!',"",
-          [ { text: 'OK', onPress: () => this.setState({isLoading:false})   }]);
-      }
       },
     );
+  }
+  _responseInfoCallback(error, result) {
+    if (error) {
+      console.log('Error fetching data: ' + error.toString());
+    } else {
+      console.log('Success fetching data: ' + result.toString());
+    }
+  }
+  initiateLogin() {
+    const infoRequest = new GraphRequest(
+      '/me?fields=name,email',
+      null,
+      this._responseInfoCallback,
+    );
+    new GraphRequestManager().addRequest(infoRequest).start();
   }
   facebookLogin() {
     LoginManager.logInWithPermissions([
@@ -102,14 +204,15 @@ class Login extends React.Component {
         } else {
           console.log(
             'Login success with permissions: ' + result.grantedPermissions,
-            //console.log("hehe",result.grantedPermissions['email'])
           );
+
           AccessToken.getCurrentAccessToken().then(data => {
             var token = data.accessToken.toString();
             console.log('facebook initialLogin');
             console.log(token);
-            // this.setState({socialId:token})
+            //this.initiateLogin()
           });
+          //this.props.props.navigation.navigate('MyDrawer');
         }
       })
       .catch(error => {
@@ -122,6 +225,7 @@ class Login extends React.Component {
   }
 
   render() {
+    console.log('User info google', this.state.userInfo);
     const {username, password, isLoading} = this.state;
     console.log('props', this.props);
 
@@ -142,7 +246,9 @@ class Login extends React.Component {
                 <View style={style.userNameView}>
                   <TextInput
                     placeholder={'Username or email address'}
-                    defaultValue={'raj1234'}
+                    //defaultValue={'raj1234'}
+                    placeholderTextColor={'#cdd0d4'}
+                    autoCapitalize={'none'}
                     onChangeText={text => {
                       this.setState({username: text});
                     }}
@@ -159,7 +265,9 @@ class Login extends React.Component {
                 <View style={style.passwordView}>
                   <TextInput
                     placeholder={'Password'}
-                    defaultValue={'raj@1234'}
+                    autoCapitalize={'none'}
+                    //defaultValue={'raj@1234'}
+                    placeholderTextColor={'#cdd0d4'}
                     onChangeText={text => {
                       this.setState({password: text});
                     }}
@@ -229,7 +337,10 @@ class Login extends React.Component {
               <Text style={style.footerText}>Login with</Text>
 
               <View style={style.socialLoginStyling}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.googleSignIn();
+                  }}>
                   <Image
                     source={this.state.googlePlusIcon}
                     style={style.socialIconStyling}
@@ -373,6 +484,7 @@ const style = StyleSheet.create({
 const mapStateToProps = state => ({
   token: state.authenticate_Reducer.token,
   userNotes: state.data_Reducer.userNotes,
+  darkMode: state.data_Reducer.darkMode,
 });
 const mapDispatchToProps = {
   authenticate_User: authenticate_User,
@@ -380,6 +492,8 @@ const mapDispatchToProps = {
   loadUserNotes: loadUserNotes,
   setCountsView: setCountsView,
   setUserName: setUserName,
+  register_SocialUser: register_SocialUser,
+  setSocialId: setSocialId,
 };
 
 export default connect(
