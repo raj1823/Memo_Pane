@@ -16,9 +16,24 @@ import {
   USER_NOTES,
   SET_COUNTS,
   LOGOUT,
+  DATA_PRE_EXIST,
+  SELECTED_NOTE_ID
 } from './constant';
 
 import API from '../../config/env';
+
+export const isDataPreExisted=(length)=>dispatch=>{
+  dispatch({
+    type:DATA_PRE_EXIST,
+    length:length
+  })
+}
+export const updateSelectedNoteId=(id)=>dispatch=>{
+  dispatch({
+    type: SELECTED_NOTE_ID,
+    id:id
+  })
+}
 
 export const isLoggedOut = () => dispatch => {
   dispatch({

@@ -16,6 +16,8 @@ import {
   loadUserNotesDescription,
   setNoteData,
   updateHome,
+  isDataPreExisted,
+  updateSelectedNoteId
 } from '../services/Data/action';
 
 class ViewNotes extends React.Component {
@@ -50,10 +52,12 @@ class ViewNotes extends React.Component {
 
   render() {
     const {noteTitle, noteCount} = this.props;
-    console.log('notes:', this.props.userNotes);
+   // console.log('notes:', this.props.userNotes);
     var notes = this.props.userNotes.filter(item => {
       if (item.data.split('$$$')[0] === noteTitle) return item;
     });
+
+    console.log('notes',notes)
 
     return (
       <SafeAreaView style={style.container}>
@@ -92,6 +96,7 @@ class ViewNotes extends React.Component {
                         <TouchableOpacity
                           onPress={() => {
                             this.deleteNote(item.id);
+                            
                             this.updateDashboard();
                           }}>
                           <Image
@@ -136,6 +141,8 @@ class ViewNotes extends React.Component {
                           onPress={() => {
                             this.props.setNoteData(item.title, item.data);
                             this.props.navigation.navigate('My Note');
+                            this.props.isDataPreExisted(item.data.length)
+                            this.props.updateSelectedNoteId(item.id)
                           }}>
                           <Text
                             style={{
@@ -225,6 +232,8 @@ const mapDispatchToProps = {
   loadUserNotesDescription: loadUserNotesDescription,
   setNoteData: setNoteData,
   updateHome: updateHome,
+  isDataPreExisted: isDataPreExisted,
+  updateSelectedNoteId: updateSelectedNoteId
 };
 
 export default connect(

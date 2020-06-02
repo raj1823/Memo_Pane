@@ -15,4 +15,5 @@ export const LISTS = "LISTS"
 export const USER_NOTES = "USER_NOTES"
 export const SET_COUNTS = "SET_COUNTS"
 export const LOGOUT = "LOGOUT"
-   
+export const DATA_PRE_EXIST = "DATA_PRE_EXIST"  
+export const SELECTED_NOTE_ID = "SELECTED_NOTE_ID" 

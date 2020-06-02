@@ -15,28 +15,43 @@ import {
   LISTS,
   USER_NOTES,
   SET_COUNTS,
-  LOGOUT
+  LOGOUT,
+  SELECTED_NOTE_ID,
+  DATA_PRE_EXIST
 } from './constant';
 
 
 const initialState = {
+  isNoteDataPreExist: false,
   personalCount: 0,
   workCount: 0,
   ideasCount: 0,
   listCount: 0,
   noteTitle: '',
   noteData: '',
-  
-  selectedCategory : '',
+  darkMode: true,
+  selectedCategory : 'Personal',
   selectedCategoryNotesCount : null,
   userNotes:[],
-  personalNotes:[]
+  personalNotes:[],
+  dataLength: 0,
+  selectedNoteId:''
 };
 
 const data_Reducer = (state = initialState, action) => {
 
   console.log("action called:",action.type)
   switch (action.type) {
+
+    case SELECTED_NOTE_ID:return {
+      ...state,
+      selectedNoteId: action.id
+    }
+    case DATA_PRE_EXIST: return{
+      ...state,
+      isNoteDataPreExist: true,
+      dataLength: action.length
+    }
     case LOGOUT:return{
           ...state, userNotes:[],
           personalCount:0,

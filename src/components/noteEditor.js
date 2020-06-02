@@ -18,6 +18,7 @@ import {
   setNoteData,
   clearNoteData,
   addMyNote,
+  deleteNote
 } from '../services/Data/action';
 
 class NoteEditor extends React.Component {
@@ -26,9 +27,11 @@ class NoteEditor extends React.Component {
     this.state = {
       title: props.noteTitle,
       noteData: props.noteData,
+      length: props.dataLength,
+      
       visible: false,
       date: '',
-      selectedCategory: 'Personal',
+      selectedCategory: props.selectedCategory,
       leftArrow: require('../../assets/leftArrow.png'),
       data: [
         {value: 'Personal'},
@@ -74,9 +77,45 @@ class NoteEditor extends React.Component {
     that.setState({
       date: date + '/' + month + '/' + year + ' ' + hours + ':' + min,
     });
-  }
+    // console.log("note Data",this.state.noteData)
+    // console.log("()()()()()",this.state.noteData.split("$$$")[1])
 
+    if(this.state.noteData.search("$$$")!=-1){
+      this.setState({noteData: this.state.noteData.split("$$$")[1]})
+    }
+  }
+  doRequiredOperations(){
+    
+     console.log("note id in operations-------------------------------------------------",this.props.selectedNoteId)
+    
+    this.props.navigation.goBack();
+    this.clearNoteData();
+    if(this.props.isNoteDataPreExist){
+      console.log("props length",this.props.dataLength,this.state.length)
+         if(this.props.dataLength!=this.state.length){
+         
+          this.addNote(this.state.title, this.state.noteData);
+          this.props.deleteNote(this.props.token,this.props.selectedNoteId)
+          
+         }
+
+    }
+    else{
+      this.updateDashboard(this.state.selectedCategory);
+      this.addNote(this.state.title, this.state.noteData);
+     
+    }
+   
+   
+  }
+  setLength(text){
+    this.setState({length: text.length})
+    console.log("in SET LENGTHxxxxxxxxxxxxxxxxxxxxx",this.props.dataLength,this.state.length)
+   
+  }
+  
   render() {
+    console.log("BEFORE RENDER::::::::::::::",this.props.selectedNoteId)
     console.log('notes prop', this.props);
     console.log('user token', this.props.token);
     console.log('notes states', this.state);
@@ -123,10 +162,7 @@ class NoteEditor extends React.Component {
               <View style={{height: 35, width: 35, backgroundColor: 'white'}}>
                 <TouchableOpacity
                   onPress={() => {
-                    this.props.navigation.goBack();
-                    this.updateDashboard(this.state.selectedCategory);
-                    this.addNote(this.state.title, this.state.noteData);
-                    this.clearNoteData();
+                      this.doRequiredOperations()
                   }}>
                   <Image
                     source={this.state.leftArrow}
@@ -229,9 +265,10 @@ class NoteEditor extends React.Component {
                 />
                 <TextInput
                   placeholder={'Add Notes'}
-                  defaultValue={this.props.noteData}
+                  defaultValue={this.state.noteData}
                   multiline={true}
                   onChangeText={text => {
+                    this.setLength(text)
                     this.setState({noteData: text});
                   }}
                   style={{marginHorizontal: 15, fontSize: 18, marginBottom: 20}}
@@ -275,12 +312,19 @@ const mapStateToProps = state => ({
   token: state.authenticate_Reducer.token,
   noteData: state.data_Reducer.noteData,
   noteTitle: state.data_Reducer.noteTitle,
+  selectedCategory: state.data_Reducer.selectedCategory,
+  isNoteDataPreExist: state.data_Reducer.isNoteDataPreExist,
+  dataLength: state.data_Reducer.dataLength,
+  selectedNoteId : state.data_Reducer.selectedNoteId
+  
 });
 const mapDispatchToProps = {
   updateHome: updateHome,
   setNoteData: setNoteData,
   clearNoteData: clearNoteData,
   addMyNote: addMyNote,
+  deleteNote: deleteNote
+  
 };
 
 export default connect(
