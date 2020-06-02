@@ -17,7 +17,8 @@ import {
   SET_COUNTS,
   LOGOUT,
   DATA_PRE_EXIST,
-  SELECTED_NOTE_ID
+  SELECTED_NOTE_ID,
+  TOGLGLE_IS_DATA_EXIST
 } from './constant';
 
 import API from '../../config/env';
@@ -25,13 +26,23 @@ import API from '../../config/env';
 export const isDataPreExisted=(length)=>dispatch=>{
   dispatch({
     type:DATA_PRE_EXIST,
-    length:length
+    length:length,
+    
   })
 }
+export const toggleIsDataExist=(valueToBeToggled)=>dispatch=>{
+   console.log("77777777777777777777777777777777",valueToBeToggled)
+  dispatch({
+    type: TOGLGLE_IS_DATA_EXIST,
+    toggleValue: !valueToBeToggled
+  })
+}
+
+
 export const updateSelectedNoteId=(id)=>dispatch=>{
   dispatch({
     type: SELECTED_NOTE_ID,
-    id:id
+    id : id
   })
 }
 
@@ -181,6 +192,8 @@ export function updateHome(category) {
 }
 
 export function setNoteData(title, data) {
+
+ // console.log("mmmmmmmmmmmmmm",title,data)
   return dispatch => {
     dispatch({type: SET_NOTE_DATA, noteData: data, noteTitle: title});
   };

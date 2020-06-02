@@ -18,7 +18,9 @@ import {
   setNoteData,
   clearNoteData,
   addMyNote,
-  deleteNote
+  deleteNote,
+  loadUserNotesDescription,
+  toggleIsDataExist,
 } from '../services/Data/action';
 
 class NoteEditor extends React.Component {
@@ -28,10 +30,11 @@ class NoteEditor extends React.Component {
       title: props.noteTitle,
       noteData: props.noteData,
       length: props.dataLength,
-      
+
       visible: false,
       date: '',
       selectedCategory: props.selectedCategory,
+
       leftArrow: require('../../assets/leftArrow.png'),
       data: [
         {value: 'Personal'},
@@ -77,45 +80,105 @@ class NoteEditor extends React.Component {
     that.setState({
       date: date + '/' + month + '/' + year + ' ' + hours + ':' + min,
     });
-    // console.log("note Data",this.state.noteData)
-    // console.log("()()()()()",this.state.noteData.split("$$$")[1])
 
-    if(this.state.noteData.search("$$$")!=-1){
-      this.setState({noteData: this.state.noteData.split("$$$")[1]})
+    if (this.state.noteData.search('$$$') != -1) {
+      this.setState({noteData: this.state.noteData.split('$$$')[1]});
     }
   }
-  doRequiredOperations(){
-    
-     console.log("note id in operations-------------------------------------------------",this.props.selectedNoteId)
-    
+  doRequiredOperations() {
+    console.log(
+      'note id in operations-------------------------------------------------',
+      this.props.selectedNoteId,
+    );
+
     this.props.navigation.goBack();
     this.clearNoteData();
-    if(this.props.isNoteDataPreExist){
-      console.log("props length",this.props.dataLength,this.state.length)
-         if(this.props.dataLength!=this.state.length){
-         
+    if (this.props.isNoteDataPreExist) {
+      console.log('props length', this.props.dataLength, this.state.length);
+      console.log('*******************');
+      console.log('note data exist');
+      if (this.props.dataLength != this.state.length) {
+        if (this.props.selectedCategory != this.state.selectedCategory) {
+          console.log('*******************');
+          console.log('different length with different CATEGORY');
           this.addNote(this.state.title, this.state.noteData);
-          this.props.deleteNote(this.props.token,this.props.selectedNoteId)
-          
-         }
+          this.props
+            .deleteNote(this.props.token, this.props.selectedNoteId)
+            .then(
+              resolve => {
+                if (resolve == 200) {
+                  this.props.loadUserNotesDescription(this.props.token);
+                }
+              },
 
-    }
-    else{
+              reject => {
+                if (reject == 'ERROR') {
+                  alert('Cannot Delete Record');
+                }
+              },
+            );
+          this.props.updateHome('delete' + this.props.selectedCategory);
+          this.updateDashboard(this.state.selectedCategory);
+        } else {
+          console.log('*******************');
+          console.log('different length with SAME CATEGORY');
+          this.addNote(this.state.title, this.state.noteData);
+          this.props
+            .deleteNote(this.props.token, this.props.selectedNoteId)
+            .then(
+              resolve => {
+                if (resolve == 200) {
+                  this.props.loadUserNotesDescription(this.props.token);
+                }
+              },
+
+              reject => {
+                if (reject == 'ERROR') {
+                  alert('Cannot Delete Record');
+                }
+              },
+            );
+        }
+      } else if (this.props.selectedCategory != this.state.selectedCategory) {
+        console.log('*******************');
+        console.log('SAME length with Different CATEGORY');
+        this.addNote(this.state.title, this.state.noteData);
+        this.updateDashboard(this.state.selectedCategory);
+        this.props.deleteNote(this.props.token, this.props.selectedNoteId).then(
+          resolve => {
+            if (resolve == 200) {
+              this.props.loadUserNotesDescription(this.props.token);
+            }
+          },
+
+          reject => {
+            if (reject == 'ERROR') {
+              alert('Cannot Delete Record');
+            }
+          },
+        );
+        this.props.updateHome('delete' + this.props.selectedCategory);
+      }
+
+      this.props.toggleIsDataExist(this.props.isNoteDataPreExist);
+    } else {
+      console.log('*******************');
+      console.log('note data DO NOT exist');
       this.updateDashboard(this.state.selectedCategory);
       this.addNote(this.state.title, this.state.noteData);
-     
     }
-   
-   
   }
-  setLength(text){
-    this.setState({length: text.length})
-    console.log("in SET LENGTHxxxxxxxxxxxxxxxxxxxxx",this.props.dataLength,this.state.length)
-   
+  setLength(text) {
+    this.setState({length: text.length});
+    console.log(
+      'in SET LENGTHxxxxxxxxxxxxxxxxxxxxx',
+      this.props.dataLength,
+      this.state.length,
+    );
   }
-  
+
   render() {
-    console.log("BEFORE RENDER::::::::::::::",this.props.selectedNoteId)
+    console.log('BEFORE RENDER::::::::::::::', this.props.selectedNoteId);
     console.log('notes prop', this.props);
     console.log('user token', this.props.token);
     console.log('notes states', this.state);
@@ -162,7 +225,7 @@ class NoteEditor extends React.Component {
               <View style={{height: 35, width: 35, backgroundColor: 'white'}}>
                 <TouchableOpacity
                   onPress={() => {
-                      this.doRequiredOperations()
+                    this.doRequiredOperations();
                   }}>
                   <Image
                     source={this.state.leftArrow}
@@ -268,7 +331,7 @@ class NoteEditor extends React.Component {
                   defaultValue={this.state.noteData}
                   multiline={true}
                   onChangeText={text => {
-                    this.setLength(text)
+                    this.setLength(text);
                     this.setState({noteData: text});
                   }}
                   style={{marginHorizontal: 15, fontSize: 18, marginBottom: 20}}
@@ -315,16 +378,16 @@ const mapStateToProps = state => ({
   selectedCategory: state.data_Reducer.selectedCategory,
   isNoteDataPreExist: state.data_Reducer.isNoteDataPreExist,
   dataLength: state.data_Reducer.dataLength,
-  selectedNoteId : state.data_Reducer.selectedNoteId
-  
+  selectedNoteId: state.data_Reducer.selectedNoteId,
 });
 const mapDispatchToProps = {
   updateHome: updateHome,
   setNoteData: setNoteData,
   clearNoteData: clearNoteData,
   addMyNote: addMyNote,
-  deleteNote: deleteNote
-  
+  deleteNote: deleteNote,
+  loadUserNotesDescription: loadUserNotesDescription,
+  toggleIsDataExist: toggleIsDataExist,
 };
 
 export default connect(

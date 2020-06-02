@@ -17,7 +17,8 @@ import {
   setNoteData,
   updateHome,
   isDataPreExisted,
-  updateSelectedNoteId
+  updateSelectedNoteId,
+  toggleIsDataExist,
 } from '../services/Data/action';
 
 class ViewNotes extends React.Component {
@@ -29,6 +30,7 @@ class ViewNotes extends React.Component {
   }
 
   updateDashboard() {
+    console.log('note title&&&&&&&&&&&&&&&&&&&&&&', this.props.noteTitle);
     this.props.updateHome('delete' + this.props.noteTitle);
   }
 
@@ -52,12 +54,12 @@ class ViewNotes extends React.Component {
 
   render() {
     const {noteTitle, noteCount} = this.props;
-   // console.log('notes:', this.props.userNotes);
+
     var notes = this.props.userNotes.filter(item => {
       if (item.data.split('$$$')[0] === noteTitle) return item;
     });
 
-    console.log('notes',notes)
+    console.log('notes', notes);
 
     return (
       <SafeAreaView style={style.container}>
@@ -96,7 +98,7 @@ class ViewNotes extends React.Component {
                         <TouchableOpacity
                           onPress={() => {
                             this.deleteNote(item.id);
-                            
+
                             this.updateDashboard();
                           }}>
                           <Image
@@ -117,7 +119,7 @@ class ViewNotes extends React.Component {
                       <View
                         style={{
                           flex: 2,
-                          // backgroundColor: 'orange',
+
                           justifyContent: 'center',
                         }}>
                         <Text
@@ -134,15 +136,18 @@ class ViewNotes extends React.Component {
                       <View
                         style={{
                           flex: 1,
-                          // backgroundColor: 'cyan',
+
                           justifyContent: 'center',
                         }}>
                         <TouchableOpacity
                           onPress={() => {
                             this.props.setNoteData(item.title, item.data);
                             this.props.navigation.navigate('My Note');
-                            this.props.isDataPreExisted(item.data.length)
-                            this.props.updateSelectedNoteId(item.id)
+                            this.props.isDataPreExisted(item.data.length);
+                            this.props.toggleIsDataExist(
+                              this.props.isNoteDataPreExist,
+                            );
+                            this.props.updateSelectedNoteId(item.id);
                           }}>
                           <Text
                             style={{
@@ -185,11 +190,10 @@ const style = StyleSheet.create({
   },
   notesViewStyling: {
     flex: 3,
-    //backgroundColor:"orange"
   },
   headerStyling: {
     flex: 1,
-    // backgroundColor:"lightgreen",
+
     justifyContent: 'center',
   },
   container: {
@@ -226,6 +230,7 @@ const mapStateToProps = state => ({
   noteCount: state.data_Reducer.selectedCategoryNotesCount,
   userNotes: state.data_Reducer.userNotes,
   token: state.authenticate_Reducer.token,
+  isNoteDataPreExist: state.data_Reducer.isNoteDataPreExist,
 });
 const mapDispatchToProps = {
   deleteNote: deleteNote,
@@ -233,7 +238,8 @@ const mapDispatchToProps = {
   setNoteData: setNoteData,
   updateHome: updateHome,
   isDataPreExisted: isDataPreExisted,
-  updateSelectedNoteId: updateSelectedNoteId
+  updateSelectedNoteId: updateSelectedNoteId,
+  toggleIsDataExist: toggleIsDataExist,
 };
 
 export default connect(

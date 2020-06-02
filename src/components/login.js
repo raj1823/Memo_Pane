@@ -31,8 +31,8 @@ class Login extends React.Component {
     this.state = {
       userInfo: {},
       hidePassword: true,
-      username: 'raj123',
-      password: 'raj@123',
+      username: '',
+      password: '',
       isLoading: false,
       imagePath: require('../../assets/addUser.png'),
       viewPasswordImage: require('../../assets/viewPassword.png'),
@@ -46,11 +46,7 @@ class Login extends React.Component {
     };
   }
   isUserLoggedIn = () => {
-    console.log('Props before rendering: ', this.props);
-
     AsyncStorage.getItem('token').then(value => {
-      console.log('token isUserLOggedIn is', value);
-
       if (value != null) {
         this.props.setToken(value);
         AsyncStorage.getItem('username').then(value => {
@@ -65,12 +61,10 @@ class Login extends React.Component {
   };
   isSignedIn = async () => {
     const isSignedIn = await GoogleSignin.isSignedIn();
-    console.log('8888888888');
+
     if (isSignedIn) {
       console.log('user already signed in');
       AsyncStorage.getItem('token').then(value => {
-        console.log('token isUserLOggedIn is', value);
-
         if (value != null) {
           this.props.setToken(value);
 
@@ -93,9 +87,6 @@ class Login extends React.Component {
       let name = this.state.userInfo.user.name;
       let token = this.state.userInfo.user.id;
       let username = this.state.userInfo.user.email;
-
-      console.log('social id', token);
-      console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', name, username);
 
       this.props.register_SocialUser(username, ' ', name, '0', token).then(
         resolve => {
@@ -154,28 +145,41 @@ class Login extends React.Component {
     }
   };
   loginUser(username, password) {
-    this.props.authenticate_User(username, password).then(
-      resolve => {
-        if (resolve == 200) {
-          this.setState({isLoading: false});
+    if(username.length>0 && password.length>0){
+      this.props.authenticate_User(username, password).then(
+        resolve => {
+          if (resolve == 200) {
+            this.setState({isLoading: false});
+  
+            this.props.props.navigation.navigate('MyDrawer');
+          }
+        },
+        reject => {
+          if (reject == 'ERROR') {
+            Alert.alert('Wrong Credentials', '', [
+              {text: 'OK', onPress: () => this.setState({isLoading: false})},
+            ]);
+            this.setState({password:''})
+          } else {
+            Alert.alert(
+              'Cannot process your request. Please try again later!',
+              '',
+              [{text: 'OK', onPress: () => this.setState({isLoading: false})}],
+            );
+          }
+        },
+      );
+    }
+    else{
+      Alert.alert(
+        'Please fill the username/password',
+        '',
+        [{text: 'OK', onPress: () => this.setState({isLoading: false})}],
+        this.setState({password:''})
 
-          this.props.props.navigation.navigate('MyDrawer');
-        }
-      },
-      reject => {
-        if (reject == 'ERROR') {
-          Alert.alert('Wrong Credentials', '', [
-            {text: 'OK', onPress: () => this.setState({isLoading: false})},
-          ]);
-        } else {
-          Alert.alert(
-            'Cannot process your request. Please try again later!',
-            '',
-            [{text: 'OK', onPress: () => this.setState({isLoading: false})}],
-          );
-        }
-      },
-    );
+      );
+    }
+   
   }
   _responseInfoCallback(error, result) {
     if (error) {
@@ -220,10 +224,6 @@ class Login extends React.Component {
       });
   }
 
-  initUSer() {
-    console.log('Init user called');
-  }
-
   render() {
     console.log('User info google', this.state.userInfo);
     const {username, password, isLoading} = this.state;
@@ -246,8 +246,8 @@ class Login extends React.Component {
                 <View style={style.userNameView}>
                   <TextInput
                     placeholder={'Username or email address'}
-                    //defaultValue={'raj1234'}
                     placeholderTextColor={'#cdd0d4'}
+                    defaultValue={this.state.username}
                     autoCapitalize={'none'}
                     onChangeText={text => {
                       this.setState({username: text});
@@ -266,7 +266,6 @@ class Login extends React.Component {
                   <TextInput
                     placeholder={'Password'}
                     autoCapitalize={'none'}
-                    //defaultValue={'raj@1234'}
                     placeholderTextColor={'#cdd0d4'}
                     onChangeText={text => {
                       this.setState({password: text});
@@ -360,10 +359,7 @@ class Login extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    this.facebookLogin(),
-                      setTimeout(() => {
-                        this.initUSer();
-                      }, 10000);
+                    this.facebookLogin();
                   }}>
                   <Image
                     source={this.state.facebookIcon}

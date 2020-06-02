@@ -69,7 +69,7 @@ class CustomDrawer extends React.Component {
           this.setState({loader: false});
           this.clearAsync();
           this.props.navigation.navigate('SignIn_SignUp');
-          //alert('You have been Logged Out Successfully');
+         
         }, 1000);
       }
     }, 1000);

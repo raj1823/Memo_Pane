@@ -17,7 +17,8 @@ import {
   SET_COUNTS,
   LOGOUT,
   SELECTED_NOTE_ID,
-  DATA_PRE_EXIST
+  DATA_PRE_EXIST,
+  TOGLGLE_IS_DATA_EXIST
 } from './constant';
 
 
@@ -42,6 +43,10 @@ const data_Reducer = (state = initialState, action) => {
 
   console.log("action called:",action.type)
   switch (action.type) {
+    case TOGLGLE_IS_DATA_EXIST: return {
+      ...state,
+      isNoteDataPreExist: action.toggleValue
+    }
 
     case SELECTED_NOTE_ID:return {
       ...state,
@@ -49,7 +54,7 @@ const data_Reducer = (state = initialState, action) => {
     }
     case DATA_PRE_EXIST: return{
       ...state,
-      isNoteDataPreExist: true,
+      
       dataLength: action.length
     }
     case LOGOUT:return{

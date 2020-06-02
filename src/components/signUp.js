@@ -88,9 +88,7 @@ class SignUp extends React.Component {
 
   render() {
     const {isLoading, validatedPassword, validatedUsername} = this.state;
-    console.log('props in sign Up', this.props);
-    console.log('isLoading', isLoading);
-
+   
     return (
       <SafeAreaView style={style.container}>
         {isLoading ? (
